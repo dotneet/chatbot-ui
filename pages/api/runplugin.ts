@@ -29,10 +29,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const verbose = process.env.DEBUG_AGENT_LLM_LOGGING === 'true';
     const context = createContext(taskId, req, model, verbose, key);
     const toolResult = await executeTool(context, toolAction);
-    const result: PluginResult = {
-      action: toolAction,
-      result: toolResult,
-    };
+    let result: PluginResult | null = null;
+    if (typeof toolResult === 'string') {
+      result = {
+        action: toolAction,
+        result: toolResult,
+      };
+    } else {
+      result = {
+        action: toolAction,
+        result: toolResult.output,
+        meta: toolResult.meta,
+      };
+    }
     res.status(200).json(result);
   } catch (error) {
     console.error(error);

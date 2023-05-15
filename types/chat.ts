@@ -3,13 +3,32 @@ import { OpenAIModelSchema } from './openai';
 
 import * as z from 'zod';
 
-export const RoleSchema = z.union([z.literal('system'), z.literal('assistant'), z.literal('user')]);
+export const RoleSchema = z.union([
+  z.literal('system'),
+  z.literal('assistant'),
+  z.literal('user'),
+]);
 
 export type Role = z.infer<typeof RoleSchema>;
+
+export const CodeInterpreterMetaSchema = z.object({
+  type: z.literal('code'),
+  code: z.string(),
+});
+
+export const PluginExecutionMessageMetaSchema = z.object({
+  type: z.literal('plugin-execution'),
+});
+
+export const MessageMetaSchema = z.union([
+  CodeInterpreterMetaSchema,
+  PluginExecutionMessageMetaSchema,
+]);
 
 export const MessageSchema = z.object({
   role: RoleSchema,
   content: z.string(),
+  meta: MessageMetaSchema.optional(),
 });
 
 export type Message = z.infer<typeof MessageSchema>;

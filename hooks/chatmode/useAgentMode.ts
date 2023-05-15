@@ -6,10 +6,18 @@ import { useMutation } from 'react-query';
 import useApiService from '@/services/useApiService';
 
 import { watchRefToAbort } from '@/utils/app/api';
-import { createConversationNameFromMessage } from '@/utils/app/conversation';
+import {
+  createConversationNameFromMessage,
+  createMessageFromAnswer,
+} from '@/utils/app/conversation';
 import { HomeUpdater } from '@/utils/app/homeUpdater';
 
-import { Answer, PlanningResponse, PluginResult } from '@/types/agent';
+import {
+  Answer,
+  AnswerMeta,
+  PlanningResponse,
+  PluginResult,
+} from '@/types/agent';
 import {
   ChatModeRunner,
   ChatModeRunnerParams,
@@ -95,6 +103,7 @@ export function useAgentMode(
             params.conversation = updater.addMessage(params.conversation, {
               role: 'assistant',
               content,
+              meta: { type: 'plugin-execution' },
             });
           }
           const actinoResult = await apiService.runPlugin({
@@ -105,7 +114,11 @@ export function useAgentMode(
           });
           toolActionResults.push(actinoResult);
         } else {
-          return { type: 'answer', answer: result.answer };
+          let meta: AnswerMeta | undefined = undefined;
+          if (toolActionResults.length > 0) {
+            meta = toolActionResults[toolActionResults.length - 1].meta;
+          }
+          return { type: 'answer', answer: result.answer, meta };
         }
         if (stopConversationRef.current === true) {
           stopConversationRef.current = false;
@@ -131,10 +144,11 @@ export function useAgentMode(
       let { conversation: updatedConversation, selectedConversation } =
         variables;
 
-      updatedConversation = updater.addMessage(updatedConversation, {
-        role: 'assistant',
-        content: answer.answer,
-      });
+      const message = createMessageFromAnswer(answer);
+      updatedConversation = updater.replaceSystemMessage(
+        updatedConversation,
+        message,
+      );
       const updatedConversations: Conversation[] = conversations.map(
         (conversation) => {
           if (conversation.id === selectedConversation.id) {

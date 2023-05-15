@@ -6,6 +6,8 @@ import { Conversation, Message } from '@/types/chat';
 
 import { HomeInitialState } from '@/pages/api/home/home.state';
 
+import { conversations } from '@/server/routers/conversations';
+
 export class HomeUpdater {
   constructor(
     private readonly dispatch: Dispatch<ActionType<HomeInitialState>>,
@@ -13,6 +15,25 @@ export class HomeUpdater {
 
   addMessage(conversation: Conversation, message: Message): Conversation {
     const updatedMessages: Message[] = [...conversation.messages, message];
+    conversation = {
+      ...conversation,
+      messages: updatedMessages,
+    };
+    this.dispatch({
+      field: 'selectedConversation',
+      value: conversation,
+    });
+    return conversation;
+  }
+
+  replaceSystemMessage(
+    conversation: Conversation,
+    message: Message,
+  ): Conversation {
+    const filteredMessages = conversation.messages.filter(
+      (m) => m.meta?.type !== 'plugin-execution',
+    );
+    const updatedMessages: Message[] = [...filteredMessages, message];
     conversation = {
       ...conversation,
       messages: updatedMessages,

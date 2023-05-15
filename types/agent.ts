@@ -1,4 +1,4 @@
-import { Message } from './chat';
+import { CodeInterpreterMetaSchema, Message } from './chat';
 import { OpenAIModel } from './openai';
 
 import { TaskExecutionContext } from '@/agent/plugins/executor';
@@ -9,9 +9,12 @@ export type Action = {
   plugin: PluginSummary;
   pluginInput: string;
 };
+export type PythonPluginInput = { type: string; code: string };
+export type AnswerMeta = PythonPluginInput;
 export type Answer = {
   type: 'answer';
   answer: string;
+  meta?: AnswerMeta;
 };
 export type ReactAgentResult = Action | Answer;
 
@@ -23,6 +26,7 @@ export interface PlanningResponse {
 export interface PluginResult {
   action: Action;
   result: string;
+  meta?: AnswerMeta;
 }
 
 export interface PlanningRequest {
@@ -51,12 +55,26 @@ export interface ToolDefinitionApi {
 export interface ToolAuth {
   type: string;
 }
+
+export type PythonInterpreterMeta = {
+  type: 'python';
+  code: string;
+};
+
+export type PluginExecutionResult = {
+  output: string;
+  meta?: PythonInterpreterMeta;
+};
+
 export interface Plugin {
   nameForHuman: string;
   nameForModel: string;
   descriptionForModel: string;
   descriptionForHuman: string;
-  execute?: (context: TaskExecutionContext, action: Action) => Promise<string>;
+  execute?: (
+    context: TaskExecutionContext,
+    action: Action,
+  ) => Promise<string | PluginExecutionResult>;
   api?: ToolDefinitionApi;
   apiSpec?: string;
   auth?: ToolAuth;

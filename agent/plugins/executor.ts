@@ -3,7 +3,7 @@ import { NextApiRequest } from 'next';
 import { extractHeaders } from '@/utils/server/http';
 import { getTiktokenEncoding } from '@/utils/server/tiktoken';
 
-import { Action } from '@/types/agent';
+import { Action, PluginExecutionResult } from '@/types/agent';
 import { OpenAIModel } from '@/types/openai';
 
 import { listAllTools } from './list';
@@ -59,7 +59,7 @@ export const createContext = (
 export const executeTool = async (
   context: TaskExecutionContext,
   action: Action,
-): Promise<string> => {
+): Promise<string | PluginExecutionResult> => {
   const tools = await listAllTools(context);
   const tool = tools.find(
     (tool) => tool.nameForModel === action.plugin.nameForModel,

@@ -1,4 +1,9 @@
-import { Action, Plugin } from '@/types/agent';
+import {
+  Action,
+  Plugin,
+  PluginExecutionResult,
+  PythonInterpreterMeta,
+} from '@/types/agent';
 
 import { TaskExecutionContext } from './executor';
 
@@ -11,7 +16,7 @@ export default {
   execute: async (
     context: TaskExecutionContext,
     action: Action,
-  ): Promise<string> => {
+  ): Promise<PluginExecutionResult> => {
     const isJson = action.pluginInput.slice(0, 1) === '{';
     const uri = process.env.PYTHON_INTERPRETER_BACKEND || '';
     let code = '';
@@ -21,14 +26,15 @@ export default {
     } else {
       code = action.pluginInput;
     }
+    const input = { type: 'python', code } as PythonInterpreterMeta;
     const response = await fetch(uri, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ language: 'python', code }),
+      body: JSON.stringify(input),
     });
     const result = await response.json();
-    return JSON.stringify(result);
+    return { output: JSON.stringify(result), meta: input };
   },
 } as Plugin;
