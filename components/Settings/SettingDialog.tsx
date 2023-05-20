@@ -1,3 +1,4 @@
+import { signOut, useSession } from 'next-auth/react';
 import { FC, useContext, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export const SettingDialog: FC<Props> = ({ open, onClose }) => {
+  const { data: session } = useSession();
   const { t } = useTranslation('settings');
   const {
     state: { settings },
@@ -46,13 +48,24 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
       <div className="text-lg pb-4 font-bold text-black dark:text-neutral-200">
         {t('Settings')}
       </div>
+      <div className="flex flex-row items-center justify-between">
+        <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
+          {t('Signed In As')}
+        </div>
+        <button type="button" onClick={() => signOut()}>
+          {t('Sign Out')}
+        </button>
+      </div>
 
+      <div className="text-[12px] text-black/50 dark:text-white/50 text-sm mb-4">
+        {session?.user?.email}
+      </div>
       <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
         {t('Theme')}
       </div>
 
       <select
-        className="w-full cursor-pointer bg-transparent p-2 text-neutral-700 dark:text-neutral-200"
+        className="w-full cursor-pointer bg-transparent p-2 text-neutral-700 dark:text-neutral-200 mb-4"
         value={state.theme}
         onChange={(event) =>
           dispatch({ field: 'theme', value: event.target.value })

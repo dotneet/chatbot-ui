@@ -212,7 +212,6 @@ const Home = ({
     serverSideApiKeyIsSet,
     serverSidePluginKeysSet,
   ]);
-
   return (
     <HomeContext.Provider
       value={{
