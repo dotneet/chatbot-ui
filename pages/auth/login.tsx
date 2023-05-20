@@ -14,7 +14,7 @@ import { Magic } from 'magic-sdk';
 
 const magic =
   typeof window !== 'undefined' &&
-  new Magic(process.env.MAGIC_PUBLISHABLE_KEY || 'pk_live_736BFC2205C90CA3');
+  new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY!);
 
 export default function Login({
   providers,
