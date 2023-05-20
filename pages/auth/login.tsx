@@ -100,7 +100,6 @@ export default function Login({
                 </button>
               </div>
             </form>
-
             <div>
               <div className="relative mt-10">
                 <div
@@ -118,7 +117,7 @@ export default function Login({
 
               <div className="mt-6 grid grid-cols-2 gap-4">
                 <button
-                  onClick={() => signIn(providers?.google?.id)}
+                  onClick={() => signIn('google')}
                   className="flex w-full shadow-sm ring-1 ring-inset ring-gray-300 items-center justify-center gap-3 rounded-md px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
                   <svg
@@ -156,7 +155,7 @@ export default function Login({
                   </span>
                 </button>
                 <button
-                  onClick={() => signIn(providers?.github?.id)}
+                  onClick={() => signIn('github')}
                   className="flex w-full items-center justify-center gap-3 rounded-md bg-[#24292F] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
                 >
                   <svg
@@ -191,7 +190,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const providers = await getProviders();
-
   return {
     props: { providers: providers ?? [] },
   };
