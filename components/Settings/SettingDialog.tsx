@@ -52,7 +52,11 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
         <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
           {t('Signed In As')}
         </div>
-        <button type="button" onClick={() => signOut()}>
+        <button
+          type="button"
+          className="text-black dark:text-neutral-200"
+          onClick={() => signOut()}
+        >
           {t('Sign Out')}
         </button>
       </div>
