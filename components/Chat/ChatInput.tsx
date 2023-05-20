@@ -468,11 +468,11 @@ export const ChatInput = ({ onSend, onRegenerate, textareaRef }: Props) => {
           rel="noreferrer"
           className="underline"
         >
-          Smart ChatBot UI
+          Smart CocoaChat
         </a>
         .{' '}
         {t(
-          "Smart Chatbot UI is an advanced chatbot kit for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.",
+          "Smart CocoaChat is an advanced chatbot kit for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.",
         )}
       </div>
     </div>
