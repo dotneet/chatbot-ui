@@ -208,7 +208,7 @@ export const Chat = memo(() => {
               Welcome to CocoaChat
             </div>
             <div className="text-center text-lg text-black dark:text-white">
-              <div className="mb-8">{`Smart CocoaChat is an open source clone of OpenAI's ChatGPT UI.`}</div>
+              <div className="mb-8">{`CocoaChat is an open source clone of OpenAI's ChatGPT UI.`}</div>
               <div className="mb-2 font-bold">
                 Important: CocoaChat is 100% unaffiliated with OpenAI.
               </div>
