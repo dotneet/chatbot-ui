@@ -50,12 +50,27 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
       <div className="text-lg pb-4 font-bold text-black dark:text-neutral-200">
         {t('Settings')}
       </div>
+      <div className="flex flex-row items-center justify-between">
+        <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
+          {t('Signed In As')}
+        </div>
+        <button
+          type="button"
+          className="text-black dark:text-neutral-200"
+          onClick={() => signOut()}
+        >
+          {t('Sign Out')}
+        </button>
+      </div>
+      <div className="text-[12px] text-black/50 dark:text-white/50 text-sm mb-4">
+        {session?.user?.email}
+      </div>
       <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
         {t('Language')}
       </div>
 
       <select
-        className="w-full cursor-pointer bg-transparent p-2 text-neutral-700 dark:text-neutral-200"
+        className="w-full mb-4 cursor-pointer bg-transparent p-2 text-neutral-700 dark:text-neutral-200"
         value={state.language}
         onChange={(event) => {
           const language = event.target.value;
@@ -69,22 +84,6 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
           </option>
         ))}
       </select>
-      <div className="flex flex-row items-center justify-between">
-        <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
-          {t('Signed In As')}
-        </div>
-        <button
-          type="button"
-          className="text-black dark:text-neutral-200"
-          onClick={() => signOut()}
-        >
-          {t('Sign Out')}
-        </button>
-      </div>
-
-      <div className="text-[12px] text-black/50 dark:text-white/50 text-sm mb-4">
-        {session?.user?.email}
-      </div>
       <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
         {t('Theme')}
       </div>
