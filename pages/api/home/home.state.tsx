@@ -39,6 +39,7 @@ export const initialState: Partial<HomeInitialState> = {
   settings: {
     userId: '',
     theme: 'dark',
+    language: 'en',
     defaultTemperature: 1.0,
   },
   messageIsStreaming: false,

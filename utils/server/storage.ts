@@ -164,6 +164,7 @@ export class UserDb {
     return {
       userId: this._userId,
       theme: 'dark',
+      language: 'en',
       defaultTemperature: 1.0,
     };
   }

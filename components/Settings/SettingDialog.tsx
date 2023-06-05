@@ -2,6 +2,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { FC, useContext, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 
@@ -13,6 +14,7 @@ import HomeContext from '@/pages/api/home/home.context';
 
 import { TemperatureSlider } from '../Chat/Temperature';
 import { Dialog } from '../Dialog/Dialog';
+import { AllLangs } from './const';
 
 interface Props {
   open: boolean;
@@ -30,7 +32,7 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
     initialState: settings,
   });
   const updateMutation = trpc.settings.settingsUpdate.useMutation();
-
+  const router = useRouter();
   useEffect(() => {
     if (open) {
       dispatch({ type: 'replace_all', value: settings });
@@ -60,10 +62,28 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
           {t('Sign Out')}
         </button>
       </div>
-
       <div className="text-[12px] text-black/50 dark:text-white/50 text-sm mb-4">
         {session?.user?.email}
       </div>
+      <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
+        {t('Language')}
+      </div>
+
+      <select
+        className="w-full mb-4 cursor-pointer bg-transparent p-2 text-neutral-700 dark:text-neutral-200"
+        value={state.language}
+        onChange={(event) => {
+          const language = event.target.value;
+          dispatch({ field: 'language', value: language });
+          router.push(router.pathname, router.asPath, { locale: language });
+        }}
+      >
+        {AllLangs.map((lang, index) => (
+          <option value={lang.key} key={index}>
+            {lang.title}
+          </option>
+        ))}
+      </select>
       <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
         {t('Theme')}
       </div>
