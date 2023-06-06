@@ -15,3 +15,5 @@ export const OPENAI_ORGANIZATION = process.env.OPENAI_ORGANIZATION || '';
 export const AZURE_DEPLOYMENT_ID = process.env.AZURE_DEPLOYMENT_ID || '';
 
 export const MONGODB_DB = process.env.MONGODB_DB || '';
+
+export const ELEVEN_LABS_API_KEY = process.env.ELEVEN_LABS_API_KEY || '';
