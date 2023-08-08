@@ -3,15 +3,18 @@ version: '3.6'
 services:
   reverse_proxy:
     image: nginx:1.24.0-alpine
+    container_name: proxy
     volumes:
       - ./dev_components/nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - 80:80
+
   web:
     build:
       context: .
       dockerfile: Dockerfile
       target: development
+    container_name: web
     env_file:
       - .env.local
     ports:
@@ -23,6 +26,7 @@ services:
     build:
       context: .
       dockerfile: dev_components/openai_apiserver/Dockerfile
+    container_name: apiserver
     ports:
       - 8080:80
 
