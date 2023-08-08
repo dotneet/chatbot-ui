@@ -1,10 +1,22 @@
 version: '3.6'
 
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    env_file:
+      - .env.local
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    
   openai-apiserver:
     build:
       context: .
-      dockerfile: openai_apiserver/Dockerfile
+      dockerfile: dev_components/openai_apiserver/Dockerfile
     ports:
       - 8080:80
 

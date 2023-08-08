@@ -7,6 +7,10 @@ COPY package*.json ./
 FROM base AS dependencies
 RUN npm ci
 
+FROM dependencies as development
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
 # ---- Build ----
 FROM dependencies AS build
 COPY . .
