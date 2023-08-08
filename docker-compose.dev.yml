@@ -1,6 +1,13 @@
 version: '3.6'
 
 services:
+  openai-apiserver:
+    build:
+      context: .
+      dockerfile: openai_apiserver/Dockerfile
+    ports:
+      - 8080:80
+
   mongo:
     image: mongo
     restart: always

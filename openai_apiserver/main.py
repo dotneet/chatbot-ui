@@ -11,30 +11,17 @@ import asyncio
 import argparse
 import json
 import logging
-import os
-import time
-import random
-from typing import Generator, Optional, Union, Dict, List, Any
+from typing import Generator, Optional, List, Any
 
 import fastapi
-from fastapi import Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, JSONResponse
-from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
-import httpx
+from fastapi.responses import StreamingResponse
+from fastapi.security.http import HTTPBearer
 from pydantic import BaseSettings
 import shortuuid
 import uvicorn
 
-from fastchat.constants import (
-    WORKER_API_TIMEOUT,
-    WORKER_API_EMBEDDING_BATCH_SIZE,
-    ErrorCode,
-)
-from fastchat.conversation import Conversation, SeparatorStyle
-from fastchat.model.model_adapter import get_conversation_template
-from fastapi.exceptions import RequestValidationError
-from fastchat.protocol.openai_api_protocol import (
+from app.openai_api_protocol import (
     ChatCompletionRequest,
     ChatCompletionResponse,
     ChatCompletionResponseStreamChoice,
@@ -49,17 +36,10 @@ from fastchat.protocol.openai_api_protocol import (
     CompletionStreamResponse,
     EmbeddingsRequest,
     EmbeddingsResponse,
-    ErrorResponse,
     ModelCard,
     ModelList,
     ModelPermission,
     UsageInfo,
-)
-from fastchat.protocol.api_protocol import (
-    APIChatCompletionRequest,
-    APITokenCheckRequest,
-    APITokenCheckResponse,
-    APITokenCheckResponseItem,
 )
 
 logger = logging.getLogger(__name__)
@@ -77,23 +57,6 @@ app_settings = AppSettings()
 app = fastapi.FastAPI()
 headers = {"User-Agent": "FastChat API Server"}
 get_bearer_token = HTTPBearer(auto_error=False)
-
-
-async def get_conv(model_name: str):
-    controller_address = app_settings.controller_address
-    async with httpx.AsyncClient() as client:
-        worker_addr = await get_worker_address(model_name, client)
-        conv_template = conv_template_map.get((worker_addr, model_name))
-        if conv_template is None:
-            response = await client.post(
-                worker_addr + "/worker_get_conv_template",
-                headers=headers,
-                json={"model": model_name},
-                timeout=WORKER_API_TIMEOUT,
-            )
-            conv_template = response.json()["conv"]
-            conv_template_map[(worker_addr, model_name)] = conv_template
-        return conv_template
 
 
 @app.get("/v1/models", response_model=ModelList)
@@ -307,5 +270,5 @@ if __name__ == "__main__":
 
     logger.info(f"args: {args}")
 
-    uvicorn.run("openai_api_server:app", host=args.host, port=args.port, log_level="info", reload=True)
+    uvicorn.run("main:app", host=args.host, port=args.port, log_level="info", reload=True)
     # uvicorn.run(app, host=args.host, port=args.port, log_level="info")

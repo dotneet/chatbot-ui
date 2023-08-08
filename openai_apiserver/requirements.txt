@@ -1,0 +1,5 @@
+fastapi
+pydantic<2.0.0
+uvicorn
+httpx
+shortuuid

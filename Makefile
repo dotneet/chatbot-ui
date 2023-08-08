@@ -1,6 +1,10 @@
-include .env
-
 .PHONY: all
+
+start-dev:
+	docker-compose -f docker-compose.dev.yml up --build -d
+
+destroy-dev:
+	docker-compose -f docker-compose.dev.yml down -v
 
 build:
 	docker build -t chatbot-ui .
