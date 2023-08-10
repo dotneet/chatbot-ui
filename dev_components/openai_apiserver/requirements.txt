@@ -1,4 +1,4 @@
-fastapi
+fastapi>0.99.0
 pydantic<2.0.0
 uvicorn
 httpx

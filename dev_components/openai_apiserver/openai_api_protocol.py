@@ -181,3 +181,24 @@ class CompletionStreamResponse(BaseModel):
     created: int = Field(default_factory=lambda: int(time.time()))
     model: str
     choices: List[CompletionResponseStreamChoice]
+
+
+class APITokenCheckRequestItem(BaseModel):
+    model: str
+    prompt: str
+    max_tokens: int
+
+
+class APITokenCheckRequest(BaseModel):
+    prompts: List[APITokenCheckRequestItem]
+
+
+class APITokenCheckResponseItem(BaseModel):
+    fits: bool
+    tokenCount: int
+    contextLength: int
+
+
+class APITokenCheckResponse(BaseModel):
+    prompts: List[APITokenCheckResponseItem]
+

@@ -10,6 +10,7 @@ python3 -m fastchat.serve.openai_api_server
 import asyncio
 import argparse
 import json
+import random
 import logging
 from typing import Generator, Optional, List, Any
 
@@ -41,6 +42,9 @@ from app.openai_api_protocol import (
     ModelList,
     ModelPermission,
     UsageInfo,
+    APITokenCheckRequest,
+    APITokenCheckResponse,
+    APITokenCheckResponseItem,
 )
 
 logger = logging.getLogger(__name__)
@@ -135,8 +139,8 @@ async def chat_completion_stream_generator(
         yield f"data: {chunk.json(exclude_unset=True, ensure_ascii=False)}\n\n"
     yield "data: [DONE]\n\n"
 
-@app.post("/v1/chat/completions")
-async def create_chat_completion(request: ChatCompletionRequest, dependencies=[Depends(check_api_key)]):
+@app.post("/v1/chat/completions", dependencies=[Depends(check_api_key)])
+async def create_chat_completion(request: ChatCompletionRequest):
     """Creates a completion for the chat message"""
     # logger.critical(request)
     if request.stream:
@@ -198,7 +202,7 @@ async def generate_completion_stream_generator(request: CompletionRequest, n: in
     yield "data: [DONE]\n\n"
 
 
-@app.post("/v1/completions")
+@app.post("/v1/completions", dependencies=[Depends(check_api_key)])
 async def create_completion(request: CompletionRequest):
     if request.stream:
         generator = generate_completion_stream_generator(request, request.n)
@@ -225,10 +229,9 @@ async def create_completion(request: CompletionRequest):
         )
 
 
-@app.post("/v1/embeddings")
-@app.post("/v1/engines/{model_name}/embeddings")
+@app.post("/v1/embeddings", dependencies=[Depends(check_api_key)])
+@app.post("/v1/engines/{model_name}/embeddings", dependencies=[Depends(check_api_key)])
 async def create_embeddings(request: EmbeddingsRequest, model_name: str = None):
-    import random
     """Creates embeddings for the text"""
     if request.model is None:
         request.model = model_name
@@ -253,6 +256,32 @@ async def create_embeddings(request: EmbeddingsRequest, model_name: str = None):
             completion_tokens=None,
         ),
     ).dict(exclude_none=True)
+
+
+
+
+@app.post("/api/v1/token_check", dependencies=[Depends(check_api_key)])
+async def count_tokens(request: APITokenCheckRequest):
+    """
+    Checks the token count for each message in your list
+    This is not part of the OpenAI API spec.
+    """
+    checkedList = []
+    for item in request.prompts:
+        token_num = len(item.prompt.split(" "))
+        context_len = 2048
+        can_fit = True
+        if token_num + item.max_tokens > context_len:
+            can_fit = False
+
+        checkedList.append(
+            APITokenCheckResponseItem(
+                fits=can_fit, contextLength=context_len, tokenCount=token_num
+            )
+        )
+
+    return APITokenCheckResponse(prompts=checkedList)
+
 
 
 if __name__ == "__main__":
