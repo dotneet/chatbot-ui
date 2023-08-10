@@ -2,12 +2,11 @@ import {describe, expect, it} from 'vitest'
 import {Message} from '@/types/chat';
 
 import {createMessagesToSend} from './message';
-import {getTiktokenEncoding} from './tiktoken';
 import {OpenAIModel} from "@/types/openai";
+import { TEST_APIKEY } from '../app/const';
 
 describe('createMessagesToSend', () => {
   it('should create messages to send and return max token', async () => {
-    const encoding = await getTiktokenEncoding('gpt-3.5-turbo');
     const systemPrompt = 'Hello';
     const model: OpenAIModel = {
       id: 'gpt-3.5-turbo',
@@ -21,8 +20,8 @@ describe('createMessagesToSend', () => {
       {role: 'user', content: 'Fine, thank you.'},
     ];
 
-    const result = createMessagesToSend(
-      encoding,
+    const result = await createMessagesToSend(
+      TEST_APIKEY,
       model,
       systemPrompt,
       100,

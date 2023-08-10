@@ -87,7 +87,7 @@ async def check_api_key(
         # api_keys not set; allow all
         return None
 
-@app.get("/v1/models", response_model=ModelList, dependencies=[Depends(check_api_key)])
+@app.get("/api/v1/models", response_model=ModelList, dependencies=[Depends(check_api_key)])
 async def show_available_models():
     model_cards = []
     for model in ["vicuna-13b-hf", "wizard-vicuna-13b-hf"]:
@@ -139,7 +139,7 @@ async def chat_completion_stream_generator(
         yield f"data: {chunk.json(exclude_unset=True, ensure_ascii=False)}\n\n"
     yield "data: [DONE]\n\n"
 
-@app.post("/v1/chat/completions", dependencies=[Depends(check_api_key)])
+@app.post("/api/v1/chat/completions", dependencies=[Depends(check_api_key)])
 async def create_chat_completion(request: ChatCompletionRequest):
     """Creates a completion for the chat message"""
     # logger.critical(request)
@@ -202,7 +202,7 @@ async def generate_completion_stream_generator(request: CompletionRequest, n: in
     yield "data: [DONE]\n\n"
 
 
-@app.post("/v1/completions", dependencies=[Depends(check_api_key)])
+@app.post("/api/v1/completions", dependencies=[Depends(check_api_key)])
 async def create_completion(request: CompletionRequest):
     if request.stream:
         generator = generate_completion_stream_generator(request, request.n)
@@ -229,8 +229,8 @@ async def create_completion(request: CompletionRequest):
         )
 
 
-@app.post("/v1/embeddings", dependencies=[Depends(check_api_key)])
-@app.post("/v1/engines/{model_name}/embeddings", dependencies=[Depends(check_api_key)])
+@app.post("/api/v1/embeddings", dependencies=[Depends(check_api_key)])
+@app.post("/api/v1/engines/{model_name}/embeddings", dependencies=[Depends(check_api_key)])
 async def create_embeddings(request: EmbeddingsRequest, model_name: str = None):
     """Creates embeddings for the text"""
     if request.model is None:

@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { OpenAIError } from '@/utils/server';
 import { ensureHasValidSession } from '@/utils/server/auth';
-import { getTiktokenEncoding } from '@/utils/server/tiktoken';
 
 import { PluginResult, RunPluginRequest } from '@/types/agent';
 

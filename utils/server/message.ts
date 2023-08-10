@@ -1,15 +1,15 @@
 import { Message } from '@/types/chat';
-import { OpenAIModel } from '@/types/openai';
+import { LocalAIModelID, OpenAIModel } from '@/types/openai';
 
-import { Tiktoken } from 'tiktoken';
+import { getTokenCountResponse } from './token';
 
-export const createMessagesToSend = (
-  encoding: Tiktoken,
+export const createMessagesToSend = async (
+  key: string,
   model: OpenAIModel,
   systemPrompt: string,
   reservedForCompletion: number,
   messages: Message[],
-): { messages: Message[]; maxToken: number } => {
+): Promise<{ messages: Message[]; maxToken: number }> => {
   let messagesToSend: Message[] = [];
   const systemPromptMessage: Message = {
     role: 'system',
@@ -25,30 +25,24 @@ export const createMessagesToSend = (
       message,
     ];
     const serialized = serializeMessages(model.name, serializingMessages);
-    let encodedLength = encoding.encode(serialized, 'all').length;
-    if (encodedLength + reservedForCompletion > model.tokenLimit) {
+    let tokenLength = await getTokenCountResponse(model.id as LocalAIModelID, serialized, key)
+    if (tokenLength.tokenCount + reservedForCompletion > model.tokenLimit) {
       break;
     }
-    contentLength = encodedLength;
+    contentLength = tokenLength.tokenCount;
     messagesToSend = [message, ...messagesToSend];
   }
   const maxToken = model.tokenLimit - contentLength;
   return { messages: messagesToSend, maxToken };
 };
 
-// Borrow from:
-// https://github.com/dqbd/tiktoken/issues/23#issuecomment-1483317174
 export function serializeMessages(model: string, messages: Message[]): string {
-  const isChat =
-    model.indexOf('gpt-3.5-turbo') !== -1 || model.indexOf('gpt-4') !== -1;
-  const msgSep = isChat ? '\n' : '';
-  const roleSep = isChat ? '\n' : '<|im_sep|>';
+  const msgSep = '\n';
   return [
     messages
       .map(({ role, content }) => {
-        return `<|im_start|>${role}${roleSep}${content}<|im_end|>`;
+        return `${role}: ${content}`;
       })
       .join(msgSep),
-    `<|im_start|>assistant${roleSep}`,
   ].join(msgSep);
 }

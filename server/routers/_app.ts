@@ -4,6 +4,7 @@ import { folders } from './folders';
 import { models } from './models';
 import { prompts } from './prompts';
 import { settings } from './settings';
+import { tokens } from './tokens';
 
 export const appRouter = router({
   models,
@@ -11,6 +12,7 @@ export const appRouter = router({
   prompts,
   folders,
   conversations,
+  tokens,
 });
 
 // export type definition of API

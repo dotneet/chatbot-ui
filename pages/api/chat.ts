@@ -4,7 +4,6 @@ import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 import { OpenAIStream } from '@/utils/server';
 import { ensureHasValidSession, getUserToken } from '@/utils/server/auth';
 import { createMessagesToSend } from '@/utils/server/message';
-import { getTiktokenEncoding } from '@/utils/server/tiktoken';
 
 import { ChatBodySchema } from '@/types/chat';
 
@@ -23,17 +22,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     req.body,
   );
   const key = await getUserToken(req, res);
-  const encoding = await getTiktokenEncoding(model.id);
   try {
     let systemPromptToSend = prompt;
     if (!systemPromptToSend) {
       systemPromptToSend = DEFAULT_SYSTEM_PROMPT;
     }
-    let { messages: messagesToSend, maxToken } = createMessagesToSend(
-      encoding,
+    let { messages: messagesToSend, maxToken } = await createMessagesToSend(
+      key,
       model,
       systemPromptToSend,
-      1000,
+      1000, // reserve 1000 tokens for reply
       messages,
     );
     if (messagesToSend.length === 0) {
@@ -76,8 +74,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
       res.status(500).json({ error: 'Error' });
     }
-  } finally {
-    encoding.free();
   }
 };
 

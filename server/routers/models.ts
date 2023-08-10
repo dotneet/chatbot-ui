@@ -10,7 +10,6 @@ import { OpenAIModel, LocalAIModelID, OpenAIModels } from '@/types/openai';
 import { procedure, router } from '../trpc';
 
 import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
 
 export const models = router({
   list: procedure
@@ -25,16 +24,7 @@ export const models = router({
       const response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
-          ...(OPENAI_API_TYPE === 'openai' && {
-            Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`,
-          }),
-          ...(OPENAI_API_TYPE === 'azure' && {
-            'api-key': `${key ? key : process.env.OPENAI_API_KEY}`,
-          }),
-          ...(OPENAI_API_TYPE === 'openai' &&
-            OPENAI_ORGANIZATION && {
-              'OpenAI-Organization': OPENAI_ORGANIZATION,
-            }),
+          Authorization: `Bearer ${key}`,
         },
       });
 
