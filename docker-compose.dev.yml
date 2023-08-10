@@ -29,6 +29,8 @@ services:
     container_name: apiserver
     ports:
       - 8080:80
+    volumes:
+      - ./dev_components/openai_apiserver:/code/app
 
   mongo:
     image: mongo

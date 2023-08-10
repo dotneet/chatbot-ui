@@ -5,7 +5,7 @@ import {
   OPENAI_ORGANIZATION,
 } from '@/utils/app/const';
 
-import { OpenAIModel, OpenAIModelID, OpenAIModels } from '@/types/openai';
+import { OpenAIModel, LocalAIModelID, OpenAIModels } from '@/types/openai';
 
 import { procedure, router } from '../trpc';
 
@@ -61,7 +61,7 @@ export const models = router({
 
       const models: OpenAIModel[] = json.data
         .map((model: any) => {
-          for (const [key, value] of Object.entries(OpenAIModelID)) {
+          for (const [key, value] of Object.entries(LocalAIModelID)) {
             const modelId = OPENAI_API_TYPE === 'azure' ? model.model : model.id;
             if (value === modelId) {
               const r: OpenAIModel = {

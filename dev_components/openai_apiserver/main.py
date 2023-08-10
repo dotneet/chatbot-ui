@@ -114,6 +114,7 @@ async def chat_completion_stream_generator(
 @app.post("/v1/chat/completions")
 async def create_chat_completion(request: ChatCompletionRequest):
     """Creates a completion for the chat message"""
+    logger.critical(request)
     if request.stream:
         generator = chat_completion_stream_generator(request.model, request.n)
         return StreamingResponse(generator, media_type="text/event-stream")

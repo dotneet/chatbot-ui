@@ -8,4 +8,4 @@ RUN pip install -r /tmp/requirements.txt
 
 COPY ./dev_components/openai_apiserver /code/app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]

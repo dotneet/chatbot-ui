@@ -4,7 +4,7 @@ import { Conversation, Message } from '@/types/chat';
 import { ChatModeKey } from '@/types/chatmode';
 import { ErrorMessage } from '@/types/error';
 import { FolderInterface } from '@/types/folder';
-import { OpenAIModel, OpenAIModelID } from '@/types/openai';
+import { OpenAIModel, LocalAIModelID } from '@/types/openai';
 import { Prompt } from '@/types/prompt';
 import { Settings } from '@/types/settings';
 
@@ -26,7 +26,7 @@ export interface HomeInitialState {
   currentFolder: FolderInterface | undefined;
   messageError: boolean;
   searchTerm: string;
-  defaultModelId: OpenAIModelID | undefined;
+  defaultModelId: LocalAIModelID | undefined;
   serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   stopConversationRef: MutableRefObject<boolean>;

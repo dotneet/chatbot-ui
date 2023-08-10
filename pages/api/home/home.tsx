@@ -12,7 +12,7 @@ import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 import { trpc } from '@/utils/trpc';
 
 import { Conversation } from '@/types/chat';
-import { OpenAIModelID, OpenAIModels, fallbackModelID } from '@/types/openai';
+import { LocalAIModelID, OpenAIModels, fallbackModelID } from '@/types/openai';
 
 import { HomeMain } from '@/components/Home/HomeMain';
 
@@ -24,7 +24,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface Props {
   serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
-  defaultModelId: OpenAIModelID;
+  defaultModelId: LocalAIModelID;
 }
 
 const Home = ({
@@ -239,8 +239,8 @@ export default Home;
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const defaultModelId =
     (process.env.DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(
-        process.env.DEFAULT_MODEL as OpenAIModelID,
+      Object.values(LocalAIModelID).includes(
+        process.env.DEFAULT_MODEL as LocalAIModelID,
       ) &&
       process.env.DEFAULT_MODEL) ||
     fallbackModelID;

@@ -9,7 +9,7 @@ import {
 } from '@/utils/app/importExport';
 
 import { ExportFormatV1, ExportFormatV2, ExportFormatV4 } from '@/types/export';
-import { OpenAIModelID, OpenAIModels } from '@/types/openai';
+import { LocalAIModelID, OpenAIModels } from '@/types/openai';
 
 import { describe, expect, it } from 'vitest';
 
@@ -101,7 +101,7 @@ describe('cleanData Functions', () => {
                 content: 'Hi',
               },
             ],
-            model: OpenAIModels[OpenAIModelID.GPT_3_5],
+            model: OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
             prompt: DEFAULT_SYSTEM_PROMPT,
             temperature: fallback.temperature,
             folderId: null,
@@ -158,7 +158,7 @@ describe('cleanData Functions', () => {
                 content: 'Hi',
               },
             ],
-            model: OpenAIModels[OpenAIModelID.GPT_3_5],
+            model: OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
             prompt: DEFAULT_SYSTEM_PROMPT,
             temperature: fallback.temperature,
             folderId: null,
@@ -194,7 +194,7 @@ describe('cleanData Functions', () => {
                 content: 'Hi',
               },
             ],
-            model: OpenAIModels[OpenAIModelID.GPT_3_5],
+            model: OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
             prompt: DEFAULT_SYSTEM_PROMPT,
             temperature: 1.0,
             folderId: null,
@@ -213,7 +213,7 @@ describe('cleanData Functions', () => {
             name: 'prompt 1',
             description: '',
             content: '',
-            model: OpenAIModels[OpenAIModelID.GPT_3_5],
+            model: OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
             folderId: null,
           },
         ],
@@ -238,7 +238,7 @@ describe('cleanData Functions', () => {
                 content: 'Hi',
               },
             ],
-            model: OpenAIModels[OpenAIModelID.GPT_3_5],
+            model: OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
             prompt: DEFAULT_SYSTEM_PROMPT,
             temperature: fallback.temperature,
             folderId: null,
@@ -257,7 +257,7 @@ describe('cleanData Functions', () => {
             name: 'prompt 1',
             description: '',
             content: '',
-            model: OpenAIModels[OpenAIModelID.GPT_3_5],
+            model: OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
             folderId: null,
           },
         ],
