@@ -76,7 +76,7 @@ function ChatControlPanel({
   const { t } = useTranslation('chat');
   return (
     <div className="left-0 top-0 mx-auto px-4 bg-transparent text-black hover:opacity-50 dark:border-neutral-600 dark:text-white md:mb-0 md:mt-2">
-      <div className="w-max flex flex-col w-fit mx-auto">
+      <div className="w-max flex flex-col mx-auto">
         <div className="flex w-fit items-center">
           {showStopButton && (
             <ChatControlButton onClick={onStopConversation}>
