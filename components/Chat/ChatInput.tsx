@@ -11,9 +11,8 @@ import {
 
 import { useTranslation } from 'next-i18next';
 
-import { Plugin } from '@/types/agent';
 import { Message } from '@/types/chat';
-import { ChatMode, ChatModeID, ChatModes } from '@/types/chatmode';
+import { ChatMode } from '@/types/chatmode';
 import { Prompt } from '@/types/prompt';
 
 import HomeContext from '@/pages/api/home/home.context';
@@ -22,8 +21,6 @@ import { ChatModeIcon } from '@/components/Chat/ChatModeIcon';
 
 import ChatContext from './Chat.context';
 import { ChatInputTokenCount } from './ChatInputTokenCount';
-import { ChatModeSelect } from './ChatModeSelect';
-import { ChatPluginList } from './ChatPluginList';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
 
@@ -33,9 +30,8 @@ interface Props {
   onSend: (
     message: Message,
     chatMode: ChatMode | null,
-    plugins: Plugin[],
   ) => void;
-  onRegenerate: (chatMode: ChatMode | null, plugins: Plugin[]) => void;
+  onRegenerate: (chatMode: ChatMode | null) => void;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
 }
 
@@ -61,7 +57,6 @@ function ChatInputContainer({
 }
 
 type ChatControlPanelProps = {
-  chatMode: ChatMode;
   showStopButton: boolean;
   showRegenerateButton: boolean;
   onRegenerate: () => void;
@@ -124,8 +119,7 @@ export const ChatInput = ({ onSend, onRegenerate, textareaRef }: Props) => {
   } = useContext(HomeContext);
 
   const {
-    state: { selectedPlugins, chatMode },
-    dispatch: chatDispatch,
+    state: { chatMode },
   } = useContext(ChatContext);
 
   const [content, setContent] = useState<string>();
@@ -135,7 +129,6 @@ export const ChatInput = ({ onSend, onRegenerate, textareaRef }: Props) => {
   const [promptInputValue, setPromptInputValue] = useState('');
   const [variables, setVariables] = useState<string[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [lastDownKey, setLastDownKey] = useState<string>('');
   const [endComposing, setEndComposing] = useState<boolean>(false);
 
@@ -173,7 +166,7 @@ export const ChatInput = ({ onSend, onRegenerate, textareaRef }: Props) => {
       return;
     }
 
-    onSend({ role: 'user', content }, chatMode, selectedPlugins);
+    onSend({ role: 'user', content }, chatMode);
     setContent('');
 
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
@@ -182,7 +175,7 @@ export const ChatInput = ({ onSend, onRegenerate, textareaRef }: Props) => {
   };
 
   const handleRegenerate = () => {
-    onRegenerate(chatMode, selectedPlugins);
+    onRegenerate(chatMode);
   };
 
   const handleStopConversation = () => {
@@ -253,7 +246,6 @@ export const ChatInput = ({ onSend, onRegenerate, textareaRef }: Props) => {
       handleSend();
     } else if (e.key === '/' && e.metaKey) {
       e.preventDefault();
-      setShowPluginSelect(!showPluginSelect);
     }
   };
 
@@ -351,53 +343,18 @@ export const ChatInput = ({ onSend, onRegenerate, textareaRef }: Props) => {
   return (
     <div className="absolute bottom-0 left-0 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-6 dark:border-white/20 dark:via-[#343541] dark:to-[#343541] md:pt-2">
       <ChatControlPanel
-        chatMode={chatMode}
         showStopButton={showStopButton}
         showRegenerateButton={Boolean(showRegenerateButton)}
         onRegenerate={() => handleRegenerate()}
         onStopConversation={handleStopConversation}
       />
-      {(chatMode.id === ChatModeID.AGENT ||
-        chatMode.id === ChatModeID.CONVERSATIONAL_AGENT) && (
-        <ChatInputContainer>
-          <ChatPluginList
-            selectedPlugins={selectedPlugins}
-            onChange={(plugins) =>
-              chatDispatch({ field: 'selectedPlugins', value: plugins })
-            }
-          />
-        </ChatInputContainer>
-      )}
       <ChatInputContainer className="mb-4">
-        <button
-          className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-          onClick={() => setShowPluginSelect(!showPluginSelect)}
+        <div
+          className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 dark:bg-opacity-50 dark:text-neutral-100"
           onKeyDown={(e) => {}}
         >
           <ChatModeIcon chatMode={chatMode} />
-        </button>
-        {showPluginSelect && (
-          <div className="absolute left-0 bottom-14 rounded bg-white dark:bg-[#343541]">
-            <ChatModeSelect
-              chatMode={chatMode}
-              onKeyDown={(e: any) => {
-                if (e.key === 'Escape') {
-                  e.preventDefault();
-                  setShowPluginSelect(false);
-                  textareaRef.current?.focus();
-                }
-              }}
-              onChatModeChange={(plugin: ChatMode) => {
-                chatDispatch({ field: 'chatMode', value: plugin });
-                setShowPluginSelect(false);
-
-                if (textareaRef && textareaRef.current) {
-                  textareaRef.current.focus();
-                }
-              }}
-            />
-          </div>
-        )}
+        </div>
         <textarea
           ref={textareaRef}
           className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"

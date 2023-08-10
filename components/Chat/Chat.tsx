@@ -10,7 +10,6 @@ import {
 
 import { useTranslation } from 'next-i18next';
 
-import { useChatModeRunner } from '@/hooks/chatmode/useChatModeRunner';
 import useConversations from '@/hooks/useConversations';
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 import useMesseageSender from '@/hooks/useMessageSender';
@@ -18,7 +17,6 @@ import useMesseageSender from '@/hooks/useMessageSender';
 import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 import { throttle } from '@/utils/data/throttle';
 
-import { Plugin } from '@/types/agent';
 import { Message } from '@/types/chat';
 import { ChatMode } from '@/types/chatmode';
 
@@ -78,8 +76,7 @@ export const Chat = memo(() => {
     async (
       message: Message,
       deleteCount = 0,
-      chatMode: ChatMode | null = null,
-      plugins: Plugin[],
+      chatMode: ChatMode | null = null
     ) => {
       if (!selectedConversation) {
         return;
@@ -93,7 +90,7 @@ export const Chat = memo(() => {
         conversation.temperature = temperature;
         await conversationsAction.update(conversation);
       }
-      sendMessage(message, deleteCount, chatMode, plugins);
+      sendMessage(message, deleteCount, chatMode);
     },
     [
       selectedConversation,
@@ -294,13 +291,13 @@ export const Chat = memo(() => {
 
             <ChatInput
               textareaRef={textareaRef}
-              onSend={(message, chatMode, plugins) => {
+              onSend={(message, chatMode) => {
                 setCurrentMessage(message);
-                handleSend(message, 0, chatMode, plugins);
+                handleSend(message, 0, chatMode);
               }}
-              onRegenerate={(chatMode, plugins) => {
+              onRegenerate={(chatMode) => {
                 if (currentMessage) {
-                  handleSend(currentMessage, 2, chatMode, plugins);
+                  handleSend(currentMessage, 2, chatMode);
                 }
               }}
             />

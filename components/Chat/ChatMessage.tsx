@@ -40,7 +40,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
     dispatch: homeDispatch,
   } = useContext(HomeContext);
   const {
-    state: { selectedPlugins, chatMode },
+    state: { chatMode },
   } = useContext(ChatContext);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -89,7 +89,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
         await conversationsAction.update(updatedConversation);
 
         const newMessage = { ...message, content: messageContent };
-        sendMessage(newMessage, deleteCount, chatMode, selectedPlugins);
+        sendMessage(newMessage, deleteCount, chatMode);
       }
     }
     setIsEditing(false);

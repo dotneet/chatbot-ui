@@ -1,4 +1,3 @@
-import { Plugin } from './agent';
 import { OpenAIModelSchema } from './openai';
 
 import * as z from 'zod';
@@ -20,8 +19,6 @@ export const ChatBodySchema = z.object({
   key: z.string(),
   prompt: z.string(),
   temperature: z.number(),
-  googleAPIKey: z.string().optional(),
-  googleCSEId: z.string().optional(),
 });
 
 export type ChatBody = z.infer<typeof ChatBodySchema>;
@@ -35,7 +32,6 @@ export interface ChatModeRunnerParams {
   message: Message;
   conversation: Conversation;
   selectedConversation: Conversation;
-  plugins: Plugin[];
 }
 
 export const ConversationSchema = z.object({

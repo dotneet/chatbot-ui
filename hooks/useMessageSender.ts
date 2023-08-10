@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Plugin } from '@/types/agent';
 import { ChatBody, Conversation, Message } from '@/types/chat';
 import { ChatMode } from '@/types/chatmode';
 
@@ -22,7 +21,6 @@ export const useMesseageSender = () => {
     message: Message,
     deleteCount = 0,
     chatMode: ChatMode | null = null,
-    plugins: Plugin[] = [],
   ) => {
     if (!selectedConversation) {
       return;
@@ -57,7 +55,6 @@ export const useMesseageSender = () => {
       conversation: updatedConversation,
       message,
       selectedConversation,
-      plugins,
     });
   };
 };

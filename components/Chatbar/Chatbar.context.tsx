@@ -15,9 +15,6 @@ export interface ChatbarContextProps {
   handleClearConversations: () => void;
   handleExportData: () => Promise<void>;
   handleImportConversations: (data: SupportedExportFormats) => Promise<void>;
-  handlePluginKeyChange: (pluginKey: ChatModeKey) => void;
-  handleClearPluginKey: (pluginKey: ChatModeKey) => void;
-  handleApiKeyChange: (apiKey: string) => void;
 }
 
 const ChatbarContext = createContext<ChatbarContextProps>(undefined!);

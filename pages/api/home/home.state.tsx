@@ -2,7 +2,6 @@ import { MutableRefObject } from 'react';
 
 import { Conversation, Message } from '@/types/chat';
 import { ChatModeKey } from '@/types/chatmode';
-import { ErrorMessage } from '@/types/error';
 import { FolderInterface } from '@/types/folder';
 import { OpenAIModel, LocalAIModelID } from '@/types/openai';
 import { Prompt } from '@/types/prompt';
@@ -27,7 +26,6 @@ export interface HomeInitialState {
   messageError: boolean;
   searchTerm: string;
   defaultModelId: LocalAIModelID | undefined;
-  serverSidePluginKeysSet: boolean;
   stopConversationRef: MutableRefObject<boolean>;
 }
 
@@ -54,5 +52,4 @@ export const initialState: Partial<HomeInitialState> = {
   messageError: false,
   searchTerm: '',
   defaultModelId: undefined,
-  serverSidePluginKeysSet: false,
 };

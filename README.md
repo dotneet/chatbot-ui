@@ -9,13 +9,9 @@ This repository is highly experimental, so please do not expect compatibility wh
 - Do not input personal information.
 - Conversation, prompts, folders are stored in mongodb.
 - Streaming response is not working in vercel environment.
-- Plugins are not working for vercel timeout limitation.
 
 ## Additional Features
 
-- SSO Auth(Google, GitHub)
-- ChatGPT compatible plugins
-- Python Interpreter Plugin
 - Persitent storage(MongoDB)
 - IME support
 
@@ -28,9 +24,7 @@ This repository is highly experimental, so please do not expect compatibility wh
 
 **Recent updates:**
 
-- [x] Python Interpreter (5/8/23)
 - [x] Multiple Users with MongoDB Support (4/19/23)
-- [x] Plugins(ChatGPT compatible) (4/17/23)
 - [x] SSO Auth(email pattern matching only) (4/15/23)
 - [x] Prompt templates (3/27/23)
 - [x] Regenerate & edit responses (3/25/23)
@@ -146,34 +140,6 @@ When deploying the application, the following environment variables can be set:
 
 If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have to provide their own key.
 If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
-
-## Plugin Settings
-
-### ChatGPT compatible plugin
-
-You can add a ChatGPT compatible plugin to `urls` field in `plugins.json`.
-
-### Internal Tools
-
-You can control the tools you want to use with the environment variable `PLUGINS_INTERNAL`.
-
-#### Supported Internal Tools
-
-- wikipedia_search
-- google_search
-- python_interpreter
-
-#### Python Interpreter
-
-_Recommended for use with GPT-4_
-
-To enable python interpreter, you need to specify codeapi endpoint to `PYTHON_INTERPRETER_BACKEND` in `.env.local` and add `python_interpreter` to PLUGINS_INTERNAL.
-
-```bash
-# ex.
-PLUGINS_INTERNAL=wikipedia_search,google_search,python_interpreter
-PYTHON_INTERPRETER_BACKEND=http://localhost:8080/api/run
-```
 
 ## Vercel
 
