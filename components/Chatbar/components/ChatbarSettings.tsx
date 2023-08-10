@@ -26,7 +26,6 @@ export const ChatbarSettings = () => {
   const {
     state: {
       apiKey,
-      serverSideApiKeyIsSet,
       serverSidePluginKeysSet,
       conversations,
     },
@@ -58,10 +57,6 @@ export const ChatbarSettings = () => {
         icon={<IconSettings size={18} />}
         onClick={() => setIsSettingDialog(true)}
       />
-
-      {!serverSideApiKeyIsSet ? (
-        <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
-      ) : null}
 
       {!serverSidePluginKeysSet ? <ChatModeKeys /> : null}
 

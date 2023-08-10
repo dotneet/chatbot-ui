@@ -27,7 +27,6 @@ export interface HomeInitialState {
   messageError: boolean;
   searchTerm: string;
   defaultModelId: LocalAIModelID | undefined;
-  serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   stopConversationRef: MutableRefObject<boolean>;
 }
@@ -55,6 +54,5 @@ export const initialState: Partial<HomeInitialState> = {
   messageError: false,
   searchTerm: '',
   defaultModelId: undefined,
-  serverSideApiKeyIsSet: false,
   serverSidePluginKeysSet: false,
 };

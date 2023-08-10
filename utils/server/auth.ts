@@ -14,6 +14,18 @@ export const ensureHasValidSession = async (
   return true;
 };
 
+export const getUserToken = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<string> => {
+  // Get user token from request bearer headers (will be injected by RAPID, or locally via nginx)
+  let token = req.headers['authorization'];
+  if(!token){
+    throw new Error("Unauthorized")
+  }
+  return token?.split(" ")[1] as string;
+};
+
 export const getUserHash = async (
   req: NextApiRequest,
   res: NextApiResponse,

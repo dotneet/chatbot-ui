@@ -14,9 +14,10 @@ import logging
 from typing import Generator, Optional, List, Any
 
 import fastapi
+from fastapi import Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from fastapi.security.http import HTTPBearer
+from fastapi.security.http import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseSettings
 import shortuuid
 import uvicorn
@@ -43,14 +44,15 @@ from app.openai_api_protocol import (
 )
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 conv_template_map = {}
+
 
 
 class AppSettings(BaseSettings):
     # The address of the model controller.
     controller_address: str = "http://localhost:21001"
-    api_keys: Optional[List[str]] = None
+    api_keys: Optional[List[str]] = ["test"]
 
 
 app_settings = AppSettings()
@@ -59,7 +61,29 @@ headers = {"User-Agent": "FastChat API Server"}
 get_bearer_token = HTTPBearer(auto_error=False)
 
 
-@app.get("/v1/models", response_model=ModelList)
+async def check_api_key(
+    auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token),
+) -> str:
+    if app_settings.api_keys:
+        # logger.critical(auth.credentials)
+        if auth is None or (token := auth.credentials) not in app_settings.api_keys:
+            raise HTTPException(
+                status_code=401,
+                detail={
+                    "error": {
+                        "message": "",
+                        "type": "invalid_request_error",
+                        "param": None,
+                        "code": "invalid_api_key",
+                    }
+                },
+            )
+        return token
+    else:
+        # api_keys not set; allow all
+        return None
+
+@app.get("/v1/models", response_model=ModelList, dependencies=[Depends(check_api_key)])
 async def show_available_models():
     model_cards = []
     for model in ["vicuna-13b-hf", "wizard-vicuna-13b-hf"]:
@@ -112,9 +136,9 @@ async def chat_completion_stream_generator(
     yield "data: [DONE]\n\n"
 
 @app.post("/v1/chat/completions")
-async def create_chat_completion(request: ChatCompletionRequest):
+async def create_chat_completion(request: ChatCompletionRequest, dependencies=[Depends(check_api_key)]):
     """Creates a completion for the chat message"""
-    logger.critical(request)
+    # logger.critical(request)
     if request.stream:
         generator = chat_completion_stream_generator(request.model, request.n)
         return StreamingResponse(generator, media_type="text/event-stream")

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 import { OpenAIStream } from '@/utils/server';
-import { ensureHasValidSession } from '@/utils/server/auth';
+import { ensureHasValidSession, getUserToken } from '@/utils/server/auth';
 import { createMessagesToSend } from '@/utils/server/message';
 import { getTiktokenEncoding } from '@/utils/server/tiktoken';
 
@@ -19,10 +19,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!(await ensureHasValidSession(req, res))) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-
-  const { model, messages, key, prompt, temperature } = ChatBodySchema.parse(
+  const { model, messages, prompt, temperature } = ChatBodySchema.parse(
     req.body,
   );
+  const key = await getUserToken(req, res);
   const encoding = await getTiktokenEncoding(model.id);
   try {
     let systemPromptToSend = prompt;

@@ -22,13 +22,11 @@ import { HomeInitialState, initialState } from './home.state';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
-  serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   defaultModelId: LocalAIModelID;
 }
 
 const Home = ({
-  serverSideApiKeyIsSet,
   serverSidePluginKeysSet,
   defaultModelId,
 }: Props) => {
@@ -53,7 +51,7 @@ const Home = ({
     dispatch,
   } = contextValue;
 
-  const modelsQuery = trpc.models.list.useQuery({ key: apiKey });
+  const modelsQuery = trpc.models.list.useQuery();
 
   useEffect(() => {
     if (modelsQuery.data)
@@ -86,11 +84,6 @@ const Home = ({
   useEffect(() => {
     defaultModelId &&
       dispatch({ field: 'defaultModelId', value: defaultModelId });
-    serverSideApiKeyIsSet &&
-      dispatch({
-        field: 'serverSideApiKeyIsSet',
-        value: serverSideApiKeyIsSet,
-      });
     serverSidePluginKeysSet &&
       dispatch({
         field: 'serverSidePluginKeysSet',
@@ -99,7 +92,6 @@ const Home = ({
   }, [
     defaultModelId,
     dispatch,
-    serverSideApiKeyIsSet,
     serverSidePluginKeysSet,
   ]);
 
@@ -173,16 +165,6 @@ const Home = ({
   ]);
 
   useEffect(() => {
-    const apiKey = localStorage.getItem('apiKey');
-
-    if (serverSideApiKeyIsSet) {
-      dispatch({ field: 'apiKey', value: '' });
-
-      localStorage.removeItem('apiKey');
-    } else if (apiKey) {
-      dispatch({ field: 'apiKey', value: apiKey });
-    }
-
     const chatModeKeys = localStorage.getItem('chatModeKeys');
     if (serverSidePluginKeysSet) {
       dispatch({ field: 'chatModeKeys', value: [] });
@@ -208,7 +190,6 @@ const Home = ({
   }, [
     defaultModelId,
     dispatch,
-    serverSideApiKeyIsSet,
     serverSidePluginKeysSet,
   ]);
 
@@ -256,7 +237,6 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
 
   return {
     props: {
-      serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
       defaultModelId,
       serverSidePluginKeysSet,
       ...(await serverSideTranslations(locale ?? 'en', [

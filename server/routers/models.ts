@@ -14,13 +14,8 @@ import { z } from 'zod';
 
 export const models = router({
   list: procedure
-    .input(
-      z.object({
-        key: z.string().optional(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const key = input.key;
+    .query(async ({ ctx }) => {
+      const key = ctx.userToken;
 
       let url = `${OPENAI_API_HOST}/v1/models`;
       if (OPENAI_API_TYPE === 'azure') {
