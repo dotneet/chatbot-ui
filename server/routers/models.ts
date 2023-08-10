@@ -29,7 +29,7 @@ export const models = router({
       });
 
       if (response.status === 401) {
-        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Unauthorized' });
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Unauthorized error. Please contact IT/DP/DSE/DES2 team for access to the llm-inference-api endpoint' });
       } else if (response.status !== 200) {
         console.error(
           `OpenAI API returned an error ${
