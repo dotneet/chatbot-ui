@@ -1,6 +1,6 @@
 export const DEFAULT_SYSTEM_PROMPT =
   process.env.NEXT_PUBLIC_DEFAULT_SYSTEM_PROMPT ||
-  "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.";
+  "";
 
 export const DEFAULT_MAX_NEW_TOKENS = 
   !!process.env.NEXT_PUBLIC_DEFAULT_MAX_NEW_TOKENS ? parseInt(process.env.NEXT_PUBLIC_DEFAULT_MAX_NEW_TOKENS, 10) :

@@ -142,7 +142,7 @@ async def chat_completion_stream_generator(
 @app.post("/api/v1/chat/completions", dependencies=[Depends(check_api_key)])
 async def create_chat_completion(request: ChatCompletionRequest):
     """Creates a completion for the chat message"""
-    # logger.critical(request)
+    logger.critical(request)
     if request.stream:
         generator = chat_completion_stream_generator(request.model, request.n)
         return StreamingResponse(generator, media_type="text/event-stream")
@@ -204,6 +204,7 @@ async def generate_completion_stream_generator(request: CompletionRequest, n: in
 
 @app.post("/api/v1/completions", dependencies=[Depends(check_api_key)])
 async def create_completion(request: CompletionRequest):
+    logger.critical(request)
     if request.stream:
         generator = generate_completion_stream_generator(request, request.n)
         return StreamingResponse(generator, media_type="text/event-stream")

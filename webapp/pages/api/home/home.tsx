@@ -12,7 +12,7 @@ import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 import { trpc } from '@/utils/trpc';
 
 import { Conversation } from '@/types/chat';
-import { LocalAIModelID, OpenAIModels, fallbackModelID } from '@/types/openai';
+import { LocalAIModelID, fallbackModelID } from '@/types/openai';
 
 import { HomeMain } from '@/components/Home/HomeMain';
 

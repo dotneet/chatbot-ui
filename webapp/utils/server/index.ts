@@ -34,6 +34,17 @@ export const OpenAIStream = async (
   maxTokens: number,
 ) => {
   let url = `${OPENAI_API_HOST}/v1/chat/completions`;
+  let requestMessages: Message[] = [
+    {
+      role: 'system',
+      content: systemPrompt,
+    },
+    ...messages,
+  ]
+  if(systemPrompt.length === 0){
+    console.log("removing system messages")
+    requestMessages = [...messages]
+  }
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
@@ -42,13 +53,7 @@ export const OpenAIStream = async (
     method: 'POST',
     body: JSON.stringify({
       model: model.id,
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        ...messages,
-      ],
+      messages: requestMessages,
       max_tokens: maxTokens,
       temperature: temperature,
       stream: true,
