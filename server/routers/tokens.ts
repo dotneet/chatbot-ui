@@ -1,5 +1,6 @@
 import {
     OPENAI_API_HOST,
+    DEFAULT_MAX_NEW_TOKENS,
   } from '@/utils/app/const';
   
 import { LocalAIModelID, OpenAIModels } from '@/types/openai';
@@ -10,7 +11,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { TokenResponse } from '@/types/tokens';
 
-  export const tokens = router({
+export const tokens = router({
     count: procedure
       .input(
         z.object({
@@ -34,7 +35,7 @@ import { TokenResponse } from '@/types/tokens';
               {
                 model: input.model,
                 prompt: input.prompt,
-                max_tokens: OpenAIModels[input.model].tokenLimit
+                max_tokens: DEFAULT_MAX_NEW_TOKENS
               }
             ]
           })

@@ -2,10 +2,8 @@ import * as z from 'zod';
 
 export const OpenAIModelSchema = z.object({
   id: z.string(),
-  azureDeploymentId: z.string().optional(),
   name: z.string(),
   maxLength: z.number(), // max length of a message.
-  tokenLimit: z.number(),
 });
 export type OpenAIModel = z.infer<typeof OpenAIModelSchema>;
 
@@ -32,12 +30,10 @@ export const OpenAIModels: Record<LocalAIModelID, OpenAIModel> = {
     id: LocalAIModelID.VICUNA_13B,
     name: 'VICUNA_13B',
     maxLength: 12000,
-    tokenLimit: 2048
   },
   [LocalAIModelID.WIZARD_VICUNA_13B]: {
     id: LocalAIModelID.WIZARD_VICUNA_13B,
     name: 'WIZARD_VICUNA_13B',
     maxLength: 12000,
-    tokenLimit: 2048
   },
 };

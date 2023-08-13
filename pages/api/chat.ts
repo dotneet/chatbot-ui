@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
+import { DEFAULT_SYSTEM_PROMPT, DEFAULT_MAX_NEW_TOKENS } from '@/utils/app/const';
 import { OpenAIStream } from '@/utils/server';
 import { ensureHasValidSession, getUserToken } from '@/utils/server/auth';
 import { createMessagesToSend } from '@/utils/server/message';
@@ -31,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       key,
       model,
       systemPromptToSend,
-      1000, // reserve 1000 tokens for reply
+      DEFAULT_MAX_NEW_TOKENS, // reserve 1000 tokens for reply
       messages,
     );
     if (messagesToSend.length === 0) {

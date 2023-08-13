@@ -11,7 +11,6 @@ describe('createMessagesToSend', () => {
     const model: OpenAIModel = {
       id: 'gpt-3.5-turbo',
       name: 'gpt-3.5-turbo',
-      tokenLimit: 1100,
       maxLength: 4000,
     }
     const messages: Message[] = [

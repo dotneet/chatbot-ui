@@ -1,10 +1,10 @@
-import { LocalAIModelID, OpenAIModels } from '@/types/openai';
+import { LocalAIModelID } from '@/types/openai';
 import { TokenResponse } from '@/types/tokens';
 import {
     OPENAI_API_HOST, TEST_APIKEY,
   } from '@/utils/app/const';
 
-export const getTokenCountResponse = async (model: LocalAIModelID, prompt: string, accessToken: string): Promise<TokenResponse> => {
+export const getTokenCountResponse = async (model: LocalAIModelID, prompt: string, accessToken: string, max_new_tokens: number): Promise<TokenResponse> => {
     if(accessToken === TEST_APIKEY){
         return {
             fits: true,
@@ -25,7 +25,7 @@ export const getTokenCountResponse = async (model: LocalAIModelID, prompt: strin
             {
               model: model,
               prompt: prompt,
-              max_tokens: OpenAIModels[model].tokenLimit
+              max_tokens: max_new_tokens  // maximum number of tokens for response
             }
           ]
         })

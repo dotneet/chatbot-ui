@@ -17,6 +17,8 @@ export const createMessagesToSend = async (
   };
 
   let contentLength: number = 0;
+  let contextLength: number = 2048; // by default 2048 context length
+
   for (let i = messages.length - 1; i >= 0; i--) {
     const message = messages[i];
     const serializingMessages = [
@@ -25,14 +27,15 @@ export const createMessagesToSend = async (
       message,
     ];
     const serialized = serializeMessages(model.name, serializingMessages);
-    let tokenLength = await getTokenCountResponse(model.id as LocalAIModelID, serialized, key)
-    if (tokenLength.tokenCount + reservedForCompletion > model.tokenLimit) {
+    let tokenCountResponse = await getTokenCountResponse(model.id as LocalAIModelID, serialized, key, reservedForCompletion)
+    contextLength = tokenCountResponse.contextLength
+    if (tokenCountResponse.tokenCount + reservedForCompletion > tokenCountResponse.contextLength) {
       break;
     }
-    contentLength = tokenLength.tokenCount;
+    contentLength = tokenCountResponse.tokenCount;
     messagesToSend = [message, ...messagesToSend];
   }
-  const maxToken = model.tokenLimit - contentLength;
+  const maxToken = contextLength - contentLength;
   return { messages: messagesToSend, maxToken };
 };
 

@@ -266,6 +266,7 @@ async def count_tokens(request: APITokenCheckRequest):
     Checks the token count for each message in your list
     This is not part of the OpenAI API spec.
     """
+    # logger.critical(request)
     checkedList = []
     for item in request.prompts:
         token_num = len(item.prompt.split(" "))
