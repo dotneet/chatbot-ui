@@ -12,15 +12,19 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./webapp/Dockerfile
       target: development
     container_name: web
-    env_file:
-      - .env.local
+    environment:
+      OPENAI_API_HOST: ${OPENAI_API_HOST}
+      DEFAULT_MODEL: ${DEFAULT_MODEL}
+      NEXT_PUBLIC_DEFAULT_SYSTEM_PROMPT: ${NEXT_PUBLIC_DEFAULT_SYSTEM_PROMPT}
+      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_DB: ${MONGODB_DB}
     ports:
       - 3000:3000
     volumes:
-      - .:/app
+      - ./webapp:/app
     
   openai-apiserver:
     build:
@@ -38,8 +42,8 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
 
   mongo-express:
     image: mongo-express
@@ -47,6 +51,6 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${MONGODB_URI}
