@@ -28,14 +28,14 @@ export const TemperatureSlider: FC<Props> = ({ onChangeTemperature }) => {
         )}
       </span>
       <span className="mt-2 mb-1 text-center text-neutral-900 dark:text-neutral-100">
-        {temperature.toFixed(1)}
+        {temperature.toFixed(2)}
       </span>
       <input
         className="cursor-pointer"
         type="range"
-        min={0}
+        min={0.01}
         max={2}
-        step={0.1}
+        step={0.01}
         value={temperature}
         onChange={handleChange}
       />

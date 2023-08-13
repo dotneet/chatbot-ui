@@ -226,17 +226,12 @@ export const Chat = memo(() => {
                           systemPrompt={systemPrompt}
                           onChangePrompt={(prompt) => setSystemPrompt(prompt)}
                           showChangeSystemPromptButton={false}
+                          setTemperature={setTemperature}
                         />
 
                         <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">
                           {t('Temperature')}
                         </label>
-
-                        <TemperatureSlider
-                          onChangeTemperature={(temperature) =>
-                            setTemperature(temperature)
-                          }
-                        />
                       </div>
                     )}
                   </div>
@@ -263,10 +258,11 @@ export const Chat = memo(() => {
                       <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
                         <div className="flex h-full flex-col space-y-4 border-b border-neutral-200 p-4 dark:border-neutral-600 md:rounded-lg md:border">
                           <ModelSelect 
-                                                    systemPrompt={systemPrompt}
-                                                    onChangePrompt={(prompt) => setSystemPrompt(prompt)}
-                                                    showChangeSystemPromptButton={true}
-                                                    />
+                            systemPrompt={systemPrompt}
+                            onChangePrompt={(prompt) => setSystemPrompt(prompt)}
+                            showChangeSystemPromptButton={true}
+                            setTemperature={setTemperature}
+                          />
                         </div>
                       </div>
                     )}

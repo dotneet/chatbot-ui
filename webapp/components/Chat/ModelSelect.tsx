@@ -1,5 +1,5 @@
 import { IconExternalLink } from '@tabler/icons-react';
-import { useContext, useEffect, useState } from 'react';
+import { SetStateAction, useContext } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -9,15 +9,17 @@ import { OpenAIModel } from '@/types/openai';
 
 import HomeContext from '@/pages/api/home/home.context';
 import { SystemPrompt } from './SystemPrompt';
+import { TemperatureSlider } from './Temperature';
 
 interface Props {
   systemPrompt: string;
   onChangePrompt: (prompt: string) => void;
   showChangeSystemPromptButton: boolean;
+  setTemperature: (value: SetStateAction<number>) => void
 }
 
 
-export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromptButton}: Props) => {
+export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromptButton, setTemperature}: Props) => {
   const { t } = useTranslation('chat');
   const [_, conversationsAction] = useConversations();
   const {
@@ -29,7 +31,7 @@ export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromp
       <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">
         {t('Model')}
       </label>
-      <div className="w-full rounded-lg border border-neutral-200 bg-transparent pr-2 text-neutral-900 dark:border-neutral-600 dark:text-white">
+      <div className="mb-2 w-full rounded-lg border border-neutral-200 bg-transparent pr-2 text-neutral-900 dark:border-neutral-600 dark:text-white">
         <select
           className="w-full bg-transparent p-2"
           placeholder={t('Select a model') || ''}
@@ -58,11 +60,11 @@ export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromp
         </select>
       </div>
       <SystemPrompt
-                          conversation={selectedConversation!}
-                          systemPrompt={systemPrompt}
-                          prompts={prompts}
-                          onChangePrompt={onChangePrompt}
-                        />
+          conversation={selectedConversation!}
+          systemPrompt={systemPrompt}
+          prompts={prompts}
+          onChangePrompt={onChangePrompt}
+      />
       {showChangeSystemPromptButton &&     
         <button 
           className="min-w-[20px] p-1 text-neutral-400 hover:text-neutral-100 place-self-start" 
@@ -75,8 +77,16 @@ export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromp
                 }}
         >
         Set system prompt
-        </button>
-      }
+        </button>}
+
+      <label className="my-2 text-left text-neutral-700 dark:text-neutral-400">
+                        {t('Temperature')}
+                      </label>
+      <TemperatureSlider
+        onChangeTemperature={(temperature) =>
+          setTemperature(temperature)
+        }
+      />
       <div className="w-full mt-3 text-left text-neutral-700 dark:text-neutral-400 flex items-center">
         <a
           href="https://platform.openai.com/account/usage"
