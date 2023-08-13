@@ -26,10 +26,7 @@ interface Props {
   defaultModelId: LocalAIModelID;
 }
 
-const Home = ({
-  serverSidePluginKeysSet,
-  defaultModelId,
-}: Props) => {
+const Home = ({ serverSidePluginKeysSet, defaultModelId }: Props) => {
   const { t } = useTranslation('chat');
   const settingsQuery = trpc.settings.get.useQuery();
   const promptsQuery = trpc.prompts.list.useQuery();
@@ -47,7 +44,14 @@ const Home = ({
   });
 
   const {
-    state: { apiKey, settings, conversations, selectedConversation, prompts, models },
+    state: {
+      apiKey,
+      settings,
+      conversations,
+      selectedConversation,
+      prompts,
+      models,
+    },
     dispatch,
   } = contextValue;
 
@@ -84,11 +88,7 @@ const Home = ({
   useEffect(() => {
     defaultModelId &&
       dispatch({ field: 'defaultModelId', value: defaultModelId });
-  }, [
-    defaultModelId,
-    dispatch,
-    serverSidePluginKeysSet,
-  ]);
+  }, [defaultModelId, dispatch, serverSidePluginKeysSet]);
 
   // ON LOAD --------------------------------------------
 
@@ -142,7 +142,7 @@ const Home = ({
             id: uuidv4(),
             name: t('New Conversation'),
             messages: [],
-            model: models.find(m=>m.id == defaultModelId),
+            model: models.find((m) => m.id == defaultModelId),
             prompt: DEFAULT_SYSTEM_PROMPT,
             temperature: settings.defaultTemperature,
             folderId: null,
@@ -156,7 +156,7 @@ const Home = ({
     settings.defaultTemperature,
     t,
     defaultModelId,
-    models
+    models,
   ]);
 
   useEffect(() => {
@@ -182,11 +182,7 @@ const Home = ({
     if (showPromptbar) {
       dispatch({ field: 'showPromptbar', value: showPromptbar === 'true' });
     }
-  }, [
-    defaultModelId,
-    dispatch,
-    serverSidePluginKeysSet,
-  ]);
+  }, [defaultModelId, dispatch, serverSidePluginKeysSet]);
 
   return (
     <HomeContext.Provider

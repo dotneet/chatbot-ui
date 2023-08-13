@@ -22,9 +22,7 @@ export const ChatbarSettings = () => {
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
 
   const {
-    state: {
-      conversations,
-    },
+    state: { conversations },
   } = useContext(HomeContext);
 
   const {

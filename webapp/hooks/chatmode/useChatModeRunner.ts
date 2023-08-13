@@ -13,6 +13,6 @@ export const useChatModeRunner = (conversations: Conversation[]) => {
   } = useContext(HomeContext);
   const directMode = useDirectMode(conversations, stopConversationRef);
   return (plugin: ChatMode | null): ChatModeRunner => {
-      return directMode;
-  }
+    return directMode;
+  };
 };

@@ -2,7 +2,7 @@ import { IconRobot } from '@tabler/icons-react';
 import { IconDots } from '@tabler/icons-react';
 import { FC } from 'react';
 
-interface Props { }
+interface Props {}
 
 export const ChatLoader: FC<Props> = () => {
   return (

@@ -1,9 +1,7 @@
 import { Message } from '@/types/chat';
 import { OpenAIModel } from '@/types/openai';
 
-import {
-  OPENAI_API_HOST,
-} from '../app/const';
+import { OPENAI_API_HOST } from '../app/const';
 
 import {
   ParsedEvent,
@@ -40,10 +38,10 @@ export const OpenAIStream = async (
       content: systemPrompt,
     },
     ...messages,
-  ]
-  if(systemPrompt.length === 0){
-    console.log("removing system messages")
-    requestMessages = [...messages]
+  ];
+  if (systemPrompt.length === 0) {
+    console.log('removing system messages');
+    requestMessages = [...messages];
   }
   const res = await fetch(url, {
     headers: {

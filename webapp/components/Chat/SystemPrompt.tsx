@@ -205,7 +205,9 @@ export const SystemPrompt: FC<Props> = ({
           }`,
         }}
         placeholder={
-          t(`Leave this field empty to use the default system prompt for this model.`) || ''
+          t(
+            `Leave this field empty to use the default system prompt for this model.`,
+          ) || ''
         }
         value={systemPrompt}
         rows={3}

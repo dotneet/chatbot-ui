@@ -1,4 +1,3 @@
-
 import { getUserHash, getUserToken } from '@/utils/server/auth';
 
 import { inferAsyncReturnType } from '@trpc/server';

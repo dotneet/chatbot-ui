@@ -27,10 +27,7 @@ import { VariableModal } from './VariableModal';
 import classNames from 'classnames';
 
 interface Props {
-  onSend: (
-    message: Message,
-    chatMode: ChatMode | null,
-  ) => void;
+  onSend: (message: Message, chatMode: ChatMode | null) => void;
   onRegenerate: (chatMode: ChatMode | null) => void;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
 }

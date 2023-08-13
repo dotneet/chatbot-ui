@@ -35,7 +35,13 @@ export default function useConversations(): [
   const conversationRemove = trpc.conversations.remove.useMutation();
   const conversationRemoveAll = trpc.conversations.removeAll.useMutation();
   const {
-    state: { defaultModelId, conversations, selectedConversation, settings, models },
+    state: {
+      defaultModelId,
+      conversations,
+      selectedConversation,
+      settings,
+      models,
+    },
     dispatch,
   } = useContext(HomeContext);
 
@@ -58,7 +64,8 @@ export default function useConversations(): [
       id: uuidv4(),
       name: `${t('New Conversation')}`,
       messages: [],
-      model: lastConversation?.model || models.find(m => m.id == defaultModelId),
+      model:
+        lastConversation?.model || models.find((m) => m.id == defaultModelId),
       prompt: t(DEFAULT_SYSTEM_PROMPT),
       temperature: settings.defaultTemperature,
       folderId: null,

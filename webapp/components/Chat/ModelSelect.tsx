@@ -8,6 +8,7 @@ import useConversations from '@/hooks/useConversations';
 import { OpenAIModel } from '@/types/openai';
 
 import HomeContext from '@/pages/api/home/home.context';
+
 import { SystemPrompt } from './SystemPrompt';
 import { TemperatureSlider } from './Temperature';
 
@@ -15,11 +16,15 @@ interface Props {
   systemPrompt: string;
   onChangePrompt: (prompt: string) => void;
   showChangeSystemPromptButton: boolean;
-  setTemperature: (value: SetStateAction<number>) => void
+  setTemperature: (value: SetStateAction<number>) => void;
 }
 
-
-export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromptButton, setTemperature}: Props) => {
+export const ModelSelect = ({
+  systemPrompt,
+  onChangePrompt,
+  showChangeSystemPromptButton,
+  setTemperature,
+}: Props) => {
   const { t } = useTranslation('chat');
   const [_, conversationsAction] = useConversations();
   const {
@@ -36,14 +41,14 @@ export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromp
           className="w-full bg-transparent p-2"
           placeholder={t('Select a model') || ''}
           value={selectedConversation?.model?.id || defaultModelId}
-          onChange={(e)=>{
+          onChange={(e) => {
             selectedConversation &&
-            conversationsAction.updateValue(selectedConversation, {
-              key: 'model',
-              value: models.find(
-                (model) => model.id === e.target.value,
-              ) as OpenAIModel,
-            });
+              conversationsAction.updateValue(selectedConversation, {
+                key: 'model',
+                value: models.find(
+                  (model) => model.id === e.target.value,
+                ) as OpenAIModel,
+              });
           }}
         >
           {models.map((model) => (
@@ -60,32 +65,31 @@ export const ModelSelect = ({systemPrompt, onChangePrompt, showChangeSystemPromp
         </select>
       </div>
       <SystemPrompt
-          conversation={selectedConversation!}
-          systemPrompt={systemPrompt}
-          prompts={prompts}
-          onChangePrompt={onChangePrompt}
+        conversation={selectedConversation!}
+        systemPrompt={systemPrompt}
+        prompts={prompts}
+        onChangePrompt={onChangePrompt}
       />
-      {showChangeSystemPromptButton &&     
-        <button 
-          className="min-w-[20px] p-1 text-neutral-400 hover:text-neutral-100 place-self-start" 
-          onClick={(e)=>{
-                selectedConversation && 
-                conversationsAction.updateValue(selectedConversation, {
-                  key: 'prompt',
-                  value: systemPrompt,
-                });   
-                }}
+      {showChangeSystemPromptButton && (
+        <button
+          className="min-w-[20px] p-1 text-neutral-400 hover:text-neutral-100 place-self-start"
+          onClick={(e) => {
+            selectedConversation &&
+              conversationsAction.updateValue(selectedConversation, {
+                key: 'prompt',
+                value: systemPrompt,
+              });
+          }}
         >
-        Set system prompt
-        </button>}
+          Set system prompt
+        </button>
+      )}
 
       <label className="my-2 text-left text-neutral-700 dark:text-neutral-400">
-                        {t('Temperature')}
-                      </label>
+        {t('Temperature')}
+      </label>
       <TemperatureSlider
-        onChangeTemperature={(temperature) =>
-          setTemperature(temperature)
-        }
+        onChangeTemperature={(temperature) => setTemperature(temperature)}
       />
       <div className="w-full mt-3 text-left text-neutral-700 dark:text-neutral-400 flex items-center">
         <a

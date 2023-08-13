@@ -27,9 +27,17 @@ export const createMessagesToSend = async (
       message,
     ];
     const serialized = serializeMessages(model.name, serializingMessages);
-    let tokenCountResponse = await getTokenCountResponse(model.id as LocalAIModelID, serialized, key, reservedForCompletion)
-    contextLength = tokenCountResponse.contextLength
-    if (tokenCountResponse.tokenCount + reservedForCompletion > tokenCountResponse.contextLength) {
+    let tokenCountResponse = await getTokenCountResponse(
+      model.id as LocalAIModelID,
+      serialized,
+      key,
+      reservedForCompletion,
+    );
+    contextLength = tokenCountResponse.contextLength;
+    if (
+      tokenCountResponse.tokenCount + reservedForCompletion >
+      tokenCountResponse.contextLength
+    ) {
       break;
     }
     contentLength = tokenCountResponse.tokenCount;

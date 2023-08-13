@@ -15,7 +15,9 @@ export const cleanSelectedConversation = (
   if (!updatedConversation.model) {
     updatedConversation = {
       ...updatedConversation,
-      model: updatedConversation.model || OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
+      model:
+        updatedConversation.model ||
+        OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
     };
   }
 

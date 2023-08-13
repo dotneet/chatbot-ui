@@ -3,7 +3,7 @@ import { MutableRefObject } from 'react';
 import { Conversation, Message } from '@/types/chat';
 import { ChatModeKey } from '@/types/chatmode';
 import { FolderInterface } from '@/types/folder';
-import { OpenAIModel, LocalAIModelID } from '@/types/openai';
+import { LocalAIModelID, OpenAIModel } from '@/types/openai';
 import { Prompt } from '@/types/prompt';
 import { Settings } from '@/types/settings';
 
