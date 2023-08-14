@@ -14,7 +14,6 @@ import useConversations from '@/hooks/useConversations';
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 import useMesseageSender from '@/hooks/useMessageSender';
 
-import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 import { throttle } from '@/utils/data/throttle';
 
 import { Message } from '@/types/chat';
@@ -60,9 +59,7 @@ export const Chat = memo(() => {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showScrollDownButton, setShowScrollDownButton] =
     useState<boolean>(false);
-  const [systemPrompt, setSystemPrompt] = useState<string>(
-    t(DEFAULT_SYSTEM_PROMPT) || '',
-  );
+  const [systemPrompt, setSystemPrompt] = useState<string>('');
   const [temperature, setTemperature] = useState<number>(
     settings.defaultTemperature,
   );
@@ -154,11 +151,7 @@ export const Chat = memo(() => {
   };
 
   useEffect(() => {
-    setSystemPrompt(
-      selectedConversation?.prompt ||
-        t(DEFAULT_SYSTEM_PROMPT) ||
-        DEFAULT_SYSTEM_PROMPT,
-    );
+    setSystemPrompt(selectedConversation?.prompt || '');
     setTemperature(settings.defaultTemperature);
   }, [selectedConversation, settings.defaultTemperature, t]);
 
@@ -228,10 +221,6 @@ export const Chat = memo(() => {
                           showChangeSystemPromptButton={false}
                           setTemperature={setTemperature}
                         />
-
-                        <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">
-                          {t('Temperature')}
-                        </label>
                       </div>
                     )}
                   </div>

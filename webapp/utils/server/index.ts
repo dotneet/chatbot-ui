@@ -40,7 +40,6 @@ export const OpenAIStream = async (
     ...messages,
   ];
   if (systemPrompt.length === 0) {
-    console.log('removing system messages');
     requestMessages = [...messages];
   }
   const res = await fetch(url, {

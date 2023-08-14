@@ -1,4 +1,3 @@
-import { IconExternalLink } from '@tabler/icons-react';
 import { SetStateAction, useContext } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -72,7 +71,7 @@ export const ModelSelect = ({
       />
       {showChangeSystemPromptButton && (
         <button
-          className="min-w-[20px] p-1 text-neutral-400 hover:text-neutral-100 place-self-start"
+          className="mt-2 min-w-[20px] p-1 text-neutral-400 hover:text-neutral-100 place-self-start outline outline-1 rounded"
           onClick={(e) => {
             selectedConversation &&
               conversationsAction.updateValue(selectedConversation, {
@@ -91,16 +90,6 @@ export const ModelSelect = ({
       <TemperatureSlider
         onChangeTemperature={(temperature) => setTemperature(temperature)}
       />
-      <div className="w-full mt-3 text-left text-neutral-700 dark:text-neutral-400 flex items-center">
-        <a
-          href="https://platform.openai.com/account/usage"
-          target="_blank"
-          className="flex items-center"
-        >
-          <IconExternalLink size={18} className={'inline mr-1'} />
-          {t('View Account Usage')}
-        </a>
-      </div>
     </div>
   );
 };
