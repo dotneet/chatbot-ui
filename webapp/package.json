@@ -12,7 +12,10 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "generate": "drizzle-kit generate:pg --out migrations-folder --schema db/schema.ts",
+    "push": "drizzle-kit push:pg",
+    "migrate": "tsx migrate.ts"
   },
   "dependencies": {
     "@tabler/icons-react": "^2.18.0",
@@ -31,6 +34,7 @@
     "next": "13.3.1",
     "next-i18next": "^13.2.2",
     "openai": "^3.2.1",
+    "pg": "^8.11.3",
     "postgres": "^3.3.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -43,6 +47,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sass": "^1.62.1",
+    "tsx": "^3.12.7",
     "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
