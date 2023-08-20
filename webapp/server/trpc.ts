@@ -14,12 +14,16 @@ const secure = middleware(async ({ ctx, next }) => {
   if (!ctx.userId) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
+  if (!ctx.userEmail) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
   if (!ctx.userToken) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   return next({
     ctx: {
       userId: parseInt(ctx.userId, 10),
+      userEmail: ctx.userEmail,
       userToken: ctx.userToken,
     },
   });

@@ -18,11 +18,11 @@ export enum OpenAIModelID {
 
 export enum LocalAIModelID {
   VICUNA_13B = 'vicuna-13b-hf',
-  WIZARD_VICUNA_13B = 'wizard-vicuna-13b-hf',
+  WIZARD_VICUNA_13B_8K = 'wizard-vicuna-13b-hf-8k',
 }
 
 // in case the `DEFAULT_MODEL` environment variable is not set or set to an unsupported model
-export const fallbackModelID = LocalAIModelID.WIZARD_VICUNA_13B;
+export const fallbackModelID = LocalAIModelID.WIZARD_VICUNA_13B_8K;
 
 // maxLength is the max number of characters per message
 export const OpenAIModels: Record<LocalAIModelID, OpenAIModel> = {
@@ -31,9 +31,9 @@ export const OpenAIModels: Record<LocalAIModelID, OpenAIModel> = {
     name: 'VICUNA_13B',
     maxLength: 12000,
   },
-  [LocalAIModelID.WIZARD_VICUNA_13B]: {
-    id: LocalAIModelID.WIZARD_VICUNA_13B,
-    name: 'WIZARD_VICUNA_13B',
+  [LocalAIModelID.WIZARD_VICUNA_13B_8K]: {
+    id: LocalAIModelID.WIZARD_VICUNA_13B_8K,
+    name: 'WIZARD_VICUNA_13B_8K',
     maxLength: 12000,
   },
 };

@@ -9,5 +9,3 @@ export const TEST_APIKEY = 'your-test-token';
 
 export const OPENAI_API_HOST =
   process.env.OPENAI_API_HOST || 'https://api.openai.com';
-
-export const MONGODB_DB = process.env.MONGODB_DB || '';

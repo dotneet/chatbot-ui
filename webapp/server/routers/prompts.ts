@@ -8,25 +8,25 @@ import { z } from 'zod';
 
 export const prompts = router({
   list: procedure.query(async ({ ctx }) => {
-    const userDb = await UserDb.fromUserId(ctx.userId);
+    const userDb = await UserDb.fromUserId(ctx.userId, ctx.userEmail);
     return await userDb.getPrompts();
   }),
   remove: procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const userDb = await UserDb.fromUserId(ctx.userId);
+      const userDb = await UserDb.fromUserId(ctx.userId, ctx.userEmail);
       await userDb.removePrompt(input.id);
       return { success: true };
     }),
   update: procedure.input(PromptSchema).mutation(async ({ ctx, input }) => {
-    const userDb = await UserDb.fromUserId(ctx.userId);
+    const userDb = await UserDb.fromUserId(ctx.userId, ctx.userEmail);
     await userDb.savePrompt(input);
     return { success: true };
   }),
   updateAll: procedure
     .input(PromptSchemaArray)
     .mutation(async ({ ctx, input }) => {
-      const userDb = await UserDb.fromUserId(ctx.userId);
+      const userDb = await UserDb.fromUserId(ctx.userId, ctx.userEmail);
       await userDb.savePrompts(input);
       return { success: true };
     }),

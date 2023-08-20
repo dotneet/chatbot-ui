@@ -39,7 +39,7 @@ export const OpenAIStream = async (
     },
     ...messages,
   ];
-  console.log(systemPrompt)
+  console.log(systemPrompt);
   if (systemPrompt.length === 0) {
     requestMessages = [...messages];
   }

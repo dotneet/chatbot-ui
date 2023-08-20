@@ -38,6 +38,18 @@ export const getUserId = async (
   return userId as string;
 };
 
+export const getUserEmail = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<string> => {
+  // Get user id from request headers
+  let userEmail = req.headers['x-user-email'];
+  if (!userEmail) {
+    throw new Error('Unauthorized');
+  }
+  return userEmail as string;
+};
+
 export const getUserHashFromMail = (email: string): string => {
   const hash = crypto.createHash('sha256').update(email).digest('hex');
   return hash;

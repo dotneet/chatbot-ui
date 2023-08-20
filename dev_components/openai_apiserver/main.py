@@ -90,7 +90,7 @@ async def check_api_key(
 @app.get("/api/v1/models", response_model=ModelList, dependencies=[Depends(check_api_key)])
 async def show_available_models():
     model_cards = []
-    for model in ["vicuna-13b-hf", "wizard-vicuna-13b-hf"]:
+    for model in ["vicuna-13b-hf", "wizard-vicuna-13b-hf-8k"]:
         model_cards.append(ModelCard(id=model, permission=[ModelPermission()]))
     return ModelList(data=model_cards)
         
@@ -101,7 +101,9 @@ async def chat_completion_stream_generator(
     Event stream format:
     https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
     """
-    return_str = """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."""
+    return_str_0 = """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."""
+    return_str_1 = """test string to reply"""
+    return_str = return_str_0 if random.randint(0, 1) == 0 else return_str_1
     id = f"chatcmpl-{shortuuid.random()}"
     for i in range(n):
         # First chunk with role

@@ -17,7 +17,7 @@ export const cleanSelectedConversation = (
       ...updatedConversation,
       model:
         updatedConversation.model ||
-        OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B],
+        OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B_8K],
     };
   }
 
@@ -59,7 +59,7 @@ export const cleanConversationHistory = (
   return history.reduce((acc: any[], conversation) => {
     try {
       if (!conversation.model) {
-        conversation.model = OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B];
+        conversation.model = OpenAIModels[LocalAIModelID.WIZARD_VICUNA_13B_8K];
       }
 
       if (!conversation.prompt) {

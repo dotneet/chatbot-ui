@@ -30,7 +30,6 @@
     "eventsource-parser": "^1.0.0",
     "i18next": "^22.4.15",
     "langchain": "^0.0.72",
-    "mongodb": "^5.5.0",
     "next": "13.3.1",
     "next-i18next": "^13.2.2",
     "openai": "^3.2.1",
