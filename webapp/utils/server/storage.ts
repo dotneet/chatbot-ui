@@ -10,10 +10,11 @@ import {
   settings,
   users,
 } from '@/db/schema';
-import { and, asc, eq } from 'drizzle-orm';
-import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { LocalAIModelID, OpenAIModels, fallbackModelID } from '@/types/openai';
 import { PostgresDB } from '@/db';
+
+import { and, asc, eq } from 'drizzle-orm';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export interface ConversationCollectionItem {
   userId: number;
