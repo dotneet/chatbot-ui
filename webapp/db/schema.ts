@@ -1,8 +1,8 @@
 import { integer, pgEnum, pgTable, serial, index, varchar, text, numeric, timestamp } from 'drizzle-orm/pg-core';
  
 export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  email: varchar('email', { length: 256 }).notNull(),
+  id: integer('id').primaryKey(),                       // provided by API Gateway the unique identifier of the user in X-User-Id
+  email: varchar('email', { length: 256 }).notNull(),   // provided by API Gateway the email of the user in X-User-Email
 });
 
 // declaring enum in database

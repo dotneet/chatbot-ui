@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS "prompts" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" integer PRIMARY KEY NOT NULL,
 	"email" varchar(256) NOT NULL
 );
 --> statement-breakpoint

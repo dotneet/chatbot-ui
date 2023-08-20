@@ -7,7 +7,7 @@ import { procedure, router } from '../trpc';
 export const settings = router({
   get: procedure.query(async ({ ctx }) => {
     try {
-      const userDb = await UserDb.fromUserHash(ctx.userHash);
+      const userDb = await UserDb.fromUserId(ctx.userId);
       return await userDb.getSettings();
     } catch (e) {
       console.error(e);
@@ -17,7 +17,7 @@ export const settings = router({
   settingsUpdate: procedure
     .input(SettingsSchema)
     .mutation(async ({ ctx, input }) => {
-      const userDb = await UserDb.fromUserHash(ctx.userHash);
+      const userDb = await UserDb.fromUserId(ctx.userId);
       await userDb.saveSettings(input);
       return { success: true };
     }),

@@ -22,21 +22,21 @@ export async function getDb(): Promise<Db> {
 }
 
 export interface ConversationCollectionItem {
-  userId: string;
+  userId: number;
   conversation: Conversation;
 }
 export interface PromptsCollectionItem {
-  userId: string;
+  userId: number;
   prompt: Prompt;
 }
 
 export interface FoldersCollectionItem {
-  userId: string;
+  userId: number;
   folder: FolderInterface;
 }
 
 export interface SettingsCollectionItem {
-  userId: string;
+  userId: number;
   settings: Settings;
 }
 
@@ -46,7 +46,7 @@ export class UserDb {
   private _prompts: Collection<PromptsCollectionItem>;
   private _settings: Collection<SettingsCollectionItem>;
 
-  constructor(_db: Db, private _userId: string) {
+  constructor(_db: Db, private _userId: number) {
     this._conversations =
       _db.collection<ConversationCollectionItem>('conversations');
     this._folders = _db.collection<FoldersCollectionItem>('folders');
@@ -54,7 +54,7 @@ export class UserDb {
     this._settings = _db.collection<SettingsCollectionItem>('settings');
   }
 
-  static async fromUserHash(userId: string): Promise<UserDb> {
+  static async fromUserId(userId: number): Promise<UserDb> {
     return new UserDb(await getDb(), userId);
   }
 

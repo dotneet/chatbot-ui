@@ -1,7 +1,7 @@
 import * as z from 'zod';
 
 export const SettingsSchema = z.object({
-  userId: z.string(),
+  userId: z.number(),
   theme: z.enum(['light', 'dark']),
   defaultTemperature: z.number(),
 });

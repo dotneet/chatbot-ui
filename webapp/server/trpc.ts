@@ -11,7 +11,7 @@ const t = initTRPC.context<Context>().create();
 export const middleware = t.middleware;
 
 const secure = middleware(async ({ ctx, next }) => {
-  if (!ctx.userHash) {
+  if (!ctx.userId) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   if (!ctx.userToken) {
@@ -19,7 +19,7 @@ const secure = middleware(async ({ ctx, next }) => {
   }
   return next({
     ctx: {
-      userHash: ctx.userHash,
+      userId: parseInt(ctx.userId, 10),
       userToken: ctx.userToken,
     },
   });

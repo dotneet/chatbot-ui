@@ -1,19 +1,20 @@
 # ---- Base Node ----
 FROM node:19-alpine AS base
 WORKDIR /app
-COPY ./webapp/package*.json ./
+COPY ./webapp/package*.json /app
 
 # ---- Dependencies ----
 FROM base AS dependencies
 RUN npm ci
 
 FROM dependencies as development
+COPY ./webapp /app
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
 # ---- Build ----
 FROM dependencies AS build
-COPY . .
+COPY ./webapp /app
 RUN npm run build
 
 # ---- Production ----

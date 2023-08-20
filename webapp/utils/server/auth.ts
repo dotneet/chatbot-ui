@@ -26,16 +26,16 @@ export const getUserToken = async (
   return token?.split(' ')[1] as string;
 };
 
-export const getUserHash = async (
+export const getUserId = async (
   req: NextApiRequest,
   res: NextApiResponse,
 ): Promise<string> => {
-  // Get user email from request headers
-  let userEmail = req.headers['x-user-email'];
-  if (!userEmail) {
+  // Get user id from request headers
+  let userId = req.headers['x-user-id'];
+  if (!userId) {
     throw new Error('Unauthorized');
   }
-  return getUserHashFromMail(userEmail as string);
+  return userId as string;
 };
 
 export const getUserHashFromMail = (email: string): string => {
