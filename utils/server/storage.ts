@@ -5,7 +5,7 @@ import { Settings } from '@/types/settings';
 
 import { MONGODB_DB } from '../app/const';
 
-import { Collection, Db, MongoClient } from 'mongodb';
+import { Collection, Db, IndexSpecification, MongoClient, Sort } from 'mongodb';
 import { User, UserRole } from '@/types/user';
 
 let _db: Db | null = null;
@@ -17,12 +17,23 @@ export async function getDb(): Promise<Db> {
     return _db;
   }
   const client = new MongoClient(process.env.MONGODB_URI, { monitorCommands: true });
-  client.on('commandFailed', (event) => console.error(JSON.stringify(event)));
+  client.on('commandFailed', (event) => console.error('getDb', JSON.stringify(event)));
   await client.connect();
   let db = client.db(MONGODB_DB);
   _db = db;
   return db;
 }
+
+
+interface CollectionSort {
+  [collection: string]: Sort;
+}
+
+const collectionSort: CollectionSort = {
+  conversations: { _id: -1 },
+  folders: { 'folder.name': 1 },
+  prompts: { 'prompt.name': 1 },
+};
 
 export interface ConversationCollectionItem {
   userId: string;
@@ -53,15 +64,49 @@ export class UserDb {
   private _publicPrompts: Collection<PromptsCollectionItem>;
   private _settings: Collection<SettingsCollectionItem>;
 
-  constructor(_db: Db, private _userId: string) {
+  constructor(public mongoDb: Db, private _userId: string) {
     this._conversations =
-      _db.collection<ConversationCollectionItem>('conversations');
-    this._folders = _db.collection<FoldersCollectionItem>('folders');
-    this._prompts = _db.collection<PromptsCollectionItem>('prompts');
-    this._publicPrompts = _db.collection<PromptsCollectionItem>('publicPrompts');
-    this._settings = _db.collection<SettingsCollectionItem>('settings');
+      mongoDb.collection<ConversationCollectionItem>('conversations');
+    this._folders = mongoDb.collection<FoldersCollectionItem>('folders');
+    this._prompts = mongoDb.collection<PromptsCollectionItem>('prompts');
+    this._publicPrompts = mongoDb.collection<PromptsCollectionItem>('publicPrompts');
+    this._settings = mongoDb.collection<SettingsCollectionItem>('settings');
   }
 
+  static async createIndexesIfNeeded() {
+    console.debug('UserDb.createIndexesIfNeeded', 'Creating Database Indexes if needed...');
+
+    const db = await getDb();
+  
+    // Perform index creation for each collection
+    for (const collection of Object.keys(collectionSort)) {
+      // Skip invalid collection sort or sorts with the default _id sort
+      if (!collectionSort[collection] || Object.keys(collectionSort[collection])[0] === '_id') {
+        continue;
+      }
+  
+      // Check if the collection exists
+      const indexes = await db.listCollections({ name: collection }).toArray();
+      console.debug('UserDb.createIndexesIfNeeded', `Found ${indexes.length} indexes for collection ${collection}`, { indexes })
+      if (indexes.length === 0) {
+        continue;
+      }
+  
+      // Obtain the first index key for the collection
+      const indexKey = Object.keys(collectionSort[collection])[0];
+  
+      // Check if the index exists for the collection
+      const indexExists = await db.collection(collection).indexExists(indexKey);
+      console.debug('UserDb.createIndexesIfNeeded', `Index ${indexKey} for collection ${collection}` + indexExists ? 'exists' : 'DOES NOT EXIST', { indexExists })
+      if (!indexExists) {
+        console.debug('UserDb.createIndexesIfNeeded', `Creating index ${indexKey} for collection ${collection}`)
+
+        // Create the index for the collection if it does not exist
+        await db.collection(collection).createIndex({ [indexKey]: 1 });
+      }
+    }
+  }
+  
   static async fromUserHash(userId: string): Promise<UserDb> {
     return new UserDb(await getDb(), userId);
   }
