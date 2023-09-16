@@ -22,7 +22,10 @@ if (process.env.GITHUB_CLIENT_ID) {
 
 export const authOptions: NextAuthOptions = {
   providers: providers,
-  session: { strategy: 'jwt' },
+  session: {
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60,
+  },
 };
 
 export default NextAuth(authOptions);
