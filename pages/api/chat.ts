@@ -92,7 +92,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
     const completionTokenCount = encoding.encode(responseText).length;
-    await saveLlmUsage(userId, model.id, "chat", {
+    saveLlmUsage(userId, model.id, "chat", {
       prompt: tokenCount,
       completion: completionTokenCount,
       total: tokenCount + completionTokenCount
