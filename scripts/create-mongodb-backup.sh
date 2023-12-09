@@ -23,6 +23,6 @@ done
 docker-compose exec mongo mongodump --authenticationDatabase admin \
     -u "$mongo_user" -p "$mongo_pass" \
     --host="${mongo_host}" --port="${mongo_port}" \
-    --db="${mongo_db}" --gzip --archive=/tmp/chatui.tar.gz
-docker-compose cp mongo:/tmp/chatui.tar.gz "${output}"
+    --db="${mongo_db}" --gzip --archive=/tmp/opengpt.tar.gz
+docker-compose cp mongo:/tmp/opengpt.tar.gz "${output}"
 

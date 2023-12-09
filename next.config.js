@@ -13,6 +13,9 @@ const nextConfig = {
 
     return config;
   },
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL
+  },
 };
 
 module.exports = nextConfig;

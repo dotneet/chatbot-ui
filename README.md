@@ -1,53 +1,28 @@
-# Smart Chatbot UI
+# OpenGPT | Free AI Chat UI
 
-This repo is forked from [chatbot-ui](https://github.com/mckaywrigley/chatbot-ui).
+## News
 
-This repository is highly experimental, so please do not expect compatibility when performing updates.
+Forked from the amazing project from McKay of [Twitter](https://twitter.com/mckaywrigley) fame.
 
-## [DEMO](https://smart-chatbot-ui.vercel.app/)
+This project is actively maintained and will be extended to support 
 
-- Do not input personal information.
-- Conversation, prompts, folders are stored in mongodb.
-- Streaming response is not working in vercel environment.
-- Plugins are not working for vercel timeout limitation.
+Initial focus is on merging all outstanding PRs and fixing bugs.
 
-## Additional Features
+## About
 
-- SSO Auth(Google, GitHub)
-- ChatGPT compatible plugins
-- Python Interpreter Plugin
-- Persitent storage(MongoDB)
-- IME support
+An open source UI for use with cloud and local LLMs. Integrates with a wide range of models.
+
+It is built with [Next.js](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/).
+
+### [Launch OpenGPT now!](https://sage-gnome-98d99a.netlify.app/)
+
+Please only use with information you're happy to share 😉
 
 ![Chatbot UI](./docs/screenshot_2023-05-08.png)
 
-## Updates
+## Technical Specs
 
-- Chatbot UI will be updated over time.
-- Expect frequent improvements.
-
-**Recent updates:**
-
-- [x] Python Interpreter (5/8/23)
-- [x] Multiple Users with MongoDB Support (4/19/23)
-- [x] Plugins(ChatGPT compatible) (4/17/23)
-- [x] SSO Auth(email pattern matching only) (4/15/23)
-- [x] Prompt templates (3/27/23)
-- [x] Regenerate & edit responses (3/25/23)
-- [x] Folders (3/24/23)
-- [x] Search chat content (3/23/23)
-- [x] Stop message generation (3/22/23)
-- [x] Import/Export chats (3/22/23)
-- [x] Custom system prompt (3/21/23)
-- [x] Error handling (3/20/23)
-- [x] GPT-4 support (access required) (3/20/23)
-- [x] Search conversations (3/19/23)
-- [x] Code syntax highlighting (3/18/23)
-- [x] Toggle sidebar (3/18/23)
-- [x] Conversation naming (3/18/23)
-- [x] GitHub flavored markdown (3/18/23)
-- [x] Add OpenAI API key in app (3/18/23)
-- [x] Markdown support (3/17/23)
+[Features](FEATURES.md)
 
 ## Deploy
 
@@ -128,7 +103,7 @@ When deploying the application, the following environment variables can be set:
 | GOOGLE_API_KEY                    |                                | See [Custom Search JSON API documentation][GCSE]                                                                                          |
 | GOOGLE_CSE_ID                     |                                | See [Custom Search JSON API documentation][GCSE]                                                                                          |
 | MONGODB_URI                       |                                | See [Official Document](https://www.mongodb.com/docs/manual/reference/connection-string/)                                                 |
-| MONGODB_DB                        | `chatui`                       | MongoDB database name                                                                                                                     |
+| MONGODB_DB                        | `opengpt`                       | MongoDB database name                                                                                                                     |
 | NEXTAUTH_ENABLED                  | `false`                        | Enable SSO authentication. set 'true' or 'false'                                                                                          |
 | NEXTAUTH_EMAIL_PATTERN            |                                | The email regex pattern granted access to chatbot-ui (ex `.+@example.com`)                                                                |
 | NEXTAUTH_URL                      | `http://localhost:3000`        | NextAuth Settings. See [Official Document](https://next-auth.js.org/configuration/options)                                                |
@@ -209,13 +184,4 @@ PLUGINS_INTERNAL=wikipedia_search,google_search,python_interpreter
 PYTHON_INTERPRETER_BACKEND=http://localhost:8080/api/run
 ```
 
-## Vercel
-
-- streaming response is not supported in vercel.
-- plugin executing fails because of the timeout limit is too short in free plan.
-
-## Contact
-
-If you have any questions, feel free to reach out to me on [Twitter](https://twitter.com/santa128bit).
-
-[GCSE]: https://developers.google.com/custom-search/v1/overview
+[Contact Us](CONTACT.md)

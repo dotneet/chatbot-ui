@@ -1,7 +1,7 @@
 version: '3.6'
 
 services:
-  chatui:
+  opengpt:
     build: .
     ports:
       - 3000:3000
@@ -15,13 +15,10 @@ services:
       - mongodb-data:/data/db
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
     env_file:
-      # Specify these envs through .env.local
-      # MONGO_INITDB_ROOT_USERNAME: root
-      # MONGO_INITDB_ROOT_PASSWORD: example
       - .env.local
 
 volumes:
   mongodb-data:
-    name: chatui-mongodb-data
+    name: opengpt-mongodb-data
   mongodb-configdb:
-    name: chatui-mongodb-configdb
+    name: opengpt-mongodb-configdb
