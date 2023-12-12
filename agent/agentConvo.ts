@@ -1,22 +1,25 @@
+import { OpenAIError } from '@/utils/server';
+import { saveLlmUsage } from '@/utils/server/llmUsage';
+import { getOpenAIApi } from '@/utils/server/openai';
+
 import { Plugin, PluginResult, ReactAgentResult } from '@/types/agent';
 import { Message } from '@/types/chat';
 
-import {
-  DebugCallbackHandler,
-  createAgentHistory,
-  messagesToOpenAIMessages,
-} from './agentUtil';
+import { createAgentHistory, messagesToOpenAIMessages } from './agentUtil';
 import { TaskExecutionContext } from './plugins/executor';
 import { listToolsBySpecifiedPlugins } from './plugins/list';
 import prompts from './prompts/agentConvo';
 
 import chalk from 'chalk';
 import { CallbackManager } from 'langchain/callbacks';
+import { BaseCallbackHandler } from 'langchain/callbacks';
 import { PromptTemplate } from 'langchain/prompts';
 import OpenAI from 'openai';
-import { getOpenAIApi } from '@/utils/server/openai';
-import { OpenAIError } from '@/utils/server';
-import { saveLlmUsage } from '@/utils/server/llmUsage';
+
+class DebugCallbackHandler extends BaseCallbackHandler {
+  name!: string;
+  // implementation of DebugCallbackHandler class
+}
 
 const setupCallbackManager = (verbose: boolean): void => {
   const callbackManager = new CallbackManager();
@@ -53,8 +56,8 @@ const createPrompts = (): {
 const createToolResponse = async (
   pluginResults: PluginResult[],
   toolResponsePrompt: PromptTemplate,
-): Promise<OpenAI.Chat.CreateChatCompletionRequestMessage[]> => {
-  let toolResponse: OpenAI.Chat.CreateChatCompletionRequestMessage[] = [];
+): Promise<OpenAI.Chat.ChatCompletionMessageParam[]> => {
+  let toolResponse: OpenAI.Chat.ChatCompletionMessageParam[] = [];
   if (pluginResults.length > 0) {
     for (const actionResult of pluginResults) {
       const toolResponseContent = await toolResponsePrompt.format({
@@ -77,7 +80,7 @@ const createFormattedPrompts = async (
   userPrompt: PromptTemplate,
   input: string,
   toolDescriptions: string,
-  toolResponse: OpenAI.Chat.CreateChatCompletionRequestMessage[],
+  toolResponse: OpenAI.Chat.ChatCompletionMessageParam[],
 ): Promise<{ systemContent: string; userContent: string }> => {
   const systemContent = await sytemPrompt.format({
     locale: context.locale,
@@ -102,7 +105,7 @@ const createMessages = async (
   history: Message[],
   modelId: string,
   input: string,
-): Promise<OpenAI.Chat.CreateChatCompletionRequestMessage[]> => {
+): Promise<OpenAI.Chat.ChatCompletionMessageParam[]> => {
   const { sytemPrompt, formatPrompt, userPrompt, toolResponsePrompt } =
     createPrompts();
   const toolResponse = await createToolResponse(
@@ -143,7 +146,9 @@ const createMessages = async (
   ];
 };
 
-const logVerboseRequest = (messages: OpenAI.Chat.CreateChatCompletionRequestMessage[]): void => {
+const logVerboseRequest = (
+  messages: OpenAI.Chat.ChatCompletionMessageParam[],
+): void => {
   console.log(chalk.greenBright('LLM Request:'));
   for (const message of messages) {
     console.log(chalk.blue(message.role + ': ') + message.content);
@@ -197,20 +202,20 @@ export const executeReactAgent = async (
   } catch (error: any) {
     if (error.response) {
       const { message, type, param, code } = error.response.data.error;
-      throw new OpenAIError(message, type, param, code)
-    } else throw error
+      throw new OpenAIError(message, type, param, code);
+    } else throw error;
   }
 
-  await saveLlmUsage(context.userId, context.model.id, "agentConv", {
-    prompt: result.data.usage!.prompt_tokens,
-    completion: result.data.usage!.completion_tokens,
-    total: result.data.usage!.total_tokens
-  })
+  await saveLlmUsage(context.userId, context.model.id, 'agentConv', {
+    prompt: result.usage!.prompt_tokens,
+    completion: result.usage!.completion_tokens,
+    total: result.usage!.total_tokens,
+  });
 
-  const responseText = result.data.choices[0].message?.content;
+  const responseText = result.choices[0].message?.content;
   const ellapsed = Date.now() - start;
   if (verbose) {
-    logVerboseResponse(ellapsed, responseText);
+    logVerboseResponse(ellapsed, responseText || undefined);
   }
   const output = parseResult(tools, responseText!);
   return output;

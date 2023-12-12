@@ -12,11 +12,11 @@ export const createEmbedding = async (
     input: text,
   });
   await saveLlmUsage(userId, modelId, "embedding", {
-    prompt: result.data.usage?.prompt_tokens,
+    prompt: result.usage?.prompt_tokens,
     completion: 0,
-    total: result.data.usage?.total_tokens
+    total: result.usage?.total_tokens
   })
-  return result.data.data[0].embedding;
+  return result.data[0].embedding;
 };
 
 export function calcCosineSimilarity(a: number[], b: number[]) {

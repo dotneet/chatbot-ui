@@ -4,9 +4,10 @@ import { Message } from '@/types/chat';
 
 import { Tiktoken } from 'tiktoken';
 import chalk from 'chalk';
-import { ConsoleCallbackHandler } from 'langchain/callbacks';
+import { ConsoleCallbackHandler, Run } from 'langchain/callbacks';
 import { LLMResult } from 'langchain/dist/schema';
 import OpenAI from 'openai';
+import { Serialized } from 'langchain/dist/load/serializable';
 
 const strip = (str: string, c: string) => {
   const m = str.match(new RegExp(`^${c}(.*)${c}$`));
@@ -24,23 +25,28 @@ export class DebugCallbackHandler extends ConsoleCallbackHandler {
   alwaysVerbose: boolean = true;
   llmStartTime: number = 0;
   async handleLLMStart(
-    llm: {
-      name: string;
-    },
+    llm: Serialized,
     prompts: string[],
     runId: string,
-  ): Promise<void> {
+    parentRunId?: string,
+    extraParams?: Map<any, any>,
+    tags?: string[],
+    metadata?: Map<any, any>,
+    name?: string,
+  ): Promise<Run> {
     this.llmStartTime = Date.now();
     console.log(chalk.greenBright('handleLLMStart ============'));
     console.log(prompts[0]);
     console.log('');
+    return Promise.resolve({} as Run);
   }
-  async handleLLMEnd(output: LLMResult, runId: string) {
+  async handleLLMEnd(output: LLMResult, runId: string): Promise<Run> {
     const duration = Date.now() - this.llmStartTime;
     console.log(chalk.greenBright('handleLLMEnd =============='));
     console.log(`ellapsed: ${duration / 1000} sec.`);
     console.log(output.generations[0][0].text);
     console.log('');
+    return Promise.resolve({} as Run);
   }
   async handleText(text: string): Promise<void> {
     console.log(chalk.greenBright('handleText =========='));
@@ -69,7 +75,7 @@ export const createAgentHistory = (
 
 export const messagesToOpenAIMessages = (
   messages: Message[],
-): OpenAI.Chat.CreateChatCompletionRequestMessage[] => {
+): OpenAI.Chat.ChatCompletionMessageParam[] => {
   return messages.map((msg) => {
     return {
       role: msg.role,

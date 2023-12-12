@@ -142,7 +142,7 @@ export const Chat = memo(() => {
 
   const onClearAll = () => {
     if (
-      confirm(t<string>('Are you sure you want to clear all messages?')) &&
+      confirm('Are you sure you want to clear all messages?') &&
       selectedConversation
     ) {
       conversationsAction.updateValue(selectedConversation, {

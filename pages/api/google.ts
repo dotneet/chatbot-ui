@@ -172,7 +172,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       } else throw error
     }
 
-    const { choices: choices2, usage } = await answerRes.data;
+    const { choices: choices2, usage } = await answerRes;
     const answer = choices2[0].message!.content;
 
     await saveLlmUsage(userId, model.id, "google", {

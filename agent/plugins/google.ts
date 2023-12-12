@@ -151,7 +151,7 @@ export default {
       } else throw error
     }
 
-    const { choices, usage } = answerRes.data;
+    const { choices, usage } = answerRes;
     const answer = choices[0].message!.content!;
     encoding.free();
 

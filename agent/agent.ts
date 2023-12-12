@@ -1,17 +1,120 @@
 import { Plugin, PluginResult, ReactAgentResult } from '@/types/agent';
 
-import { DebugCallbackHandler, stripQuotes } from './agentUtil';
+import { DebugCallbackHandler as ImportedDebugCallbackHandler, stripQuotes } from './agentUtil';
 import { TaskExecutionContext } from './plugins/executor';
 import { listToolsBySpecifiedPlugins } from './plugins/list';
 import prompts from './prompts/agent';
 
 import chalk from 'chalk';
-import { CallbackManager } from 'langchain/callbacks';
+import { CallbackManager, NewTokenIndices } from 'langchain/callbacks';
 import { PromptTemplate } from 'langchain/prompts';
 import { OpenAI } from 'openai';
 import { getOpenAIApi } from '@/utils/server/openai';
 import { OpenAIError } from '@/utils/server';
 import { saveLlmUsage } from '@/utils/server/llmUsage';
+import { BaseCallbackHandler } from 'langchain/callbacks';
+import { SerializedFields } from '@langchain/core/dist/load/map_keys';
+import { HandleLLMNewTokenCallbackFields } from 'langchain/dist/callbacks/base';
+import { Document } from 'langchain/dist/document';
+import { Serialized, SerializedNotImplemented } from 'langchain/dist/load/serializable';
+import { LLMResult, BaseMessage, ChainValues, AgentAction, AgentFinish } from 'langchain/dist/schema';
+
+class DebugCallbackHandler implements BaseCallbackHandler {
+  lc_serializable: boolean = false;
+  get lc_namespace(): ["langchain_core", "callbacks", string] {
+    throw new Error('Method not implemented.');
+  }
+  get lc_secrets(): { [key: string]: string; } | undefined {
+    throw new Error('Method not implemented.');
+  }
+  get lc_attributes(): { [key: string]: string; } | undefined {
+    throw new Error('Method not implemented.');
+  }
+  get lc_aliases(): { [key: string]: string; } | undefined {
+    throw new Error('Method not implemented.');
+  }
+  get lc_id(): string[] {
+    throw new Error('Method not implemented.');
+  }
+  lc_kwargs!: SerializedFields;
+  name!: string;
+  ignoreLLM!: boolean;
+  ignoreChain!: boolean;
+  ignoreAgent!: boolean;
+  ignoreRetriever!: boolean;
+  awaitHandlers!: boolean;
+  copy(): BaseCallbackHandler {
+    throw new Error('Method not implemented.');
+  }
+  toJSON(): Serialized {
+    throw new Error('Method not implemented.');
+  }
+  toJSONNotImplemented(): SerializedNotImplemented {
+    throw new Error('Method not implemented.');
+  }
+  handleLLMNewToken?(token: string, idx: NewTokenIndices, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined, fields?: HandleLLMNewTokenCallbackFields | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleLLMError?(err: any, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleLLMEnd?(output: LLMResult, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleChatModelStart?(llm: Serialized, messages: BaseMessage[][], runId: string, parentRunId?: string | undefined, extraParams?: Record<string, unknown> | undefined, tags?: string[] | undefined, metadata?: Record<string, unknown> | undefined, name?: string | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleChainStart?(chain: Serialized, inputs: ChainValues, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined, metadata?: Record<string, unknown> | undefined, runType?: string | undefined, name?: string | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleChainError?(err: any, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined, kwargs?: { inputs?: Record<string, unknown> | undefined; } | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleChainEnd?(outputs: ChainValues, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined, kwargs?: { inputs?: Record<string, unknown> | undefined; } | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleToolStart?(tool: Serialized, input: string, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined, metadata?: Record<string, unknown> | undefined, name?: string | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleToolError?(err: any, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleToolEnd?(output: string, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleText?(text: string, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined): void | Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  handleAgentAction?(action: AgentAction, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined): void | Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  handleAgentEnd?(action: AgentFinish, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined): void | Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  handleRetrieverStart?(retriever: Serialized, query: string, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined, metadata?: Record<string, unknown> | undefined, name?: string | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleRetrieverEnd?(documents: Document<Record<string, any>>[], runId: string, parentRunId?: string | undefined, tags?: string[] | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleRetrieverError?(err: any, runId: string, parentRunId?: string | undefined, tags?: string[] | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  handleLLMStart(
+    llm: Serialized,
+    prompts: string[],
+    runId: string,
+    parentRunId?: string,
+    extraParams?: Record<string, unknown>,
+    tags?: string[],
+    metadata?: Record<string, unknown>,
+    name?: string
+  ): any {
+    // implementation goes here
+  }
+
+  // implement other required methods here
+}
 
 const setupCallbackManager = (verbose: boolean): void => {
   const callbackManager = new CallbackManager();
@@ -84,7 +187,7 @@ const createMessages = async (
   tools: Plugin[],
   pluginResults: PluginResult[],
   input: string
-): Promise<ChatCompletionRequestMessage[]> => {
+): Promise<OpenAI.Chat.ChatCompletionMessageParam[]> => {
   const { sytemPrompt, userPrompt } = createPrompts();
   const agentScratchpad = createAgentScratchpad(pluginResults);
   const toolDescriptions = tools
@@ -113,7 +216,7 @@ const createMessages = async (
   ];
 };
 
-const logVerboseRequest = (messages: ChatCompletionRequestMessage[]): void => {
+const logVerboseRequest = (messages: OpenAI.Chat.ChatCompletionMessageParam[]): void => {
   console.log(chalk.greenBright('LLM Request:'));
   for (const message of messages) {
     console.log(chalk.blue(message.role + ': ') + message.content);
@@ -163,15 +266,15 @@ export const executeNotConversationalReactAgent = async (
   }
 
   await saveLlmUsage(context.userId, context.model.id, "agent", {
-    prompt: result.data.usage!.prompt_tokens,
-    completion: result.data.usage!.completion_tokens,
-    total: result.data.usage!.total_tokens
+    prompt: result.usage!.prompt_tokens,
+    completion: result.usage!.completion_tokens,
+    total: result.usage!.total_tokens
   })
 
-  const responseText = result.data.choices[0].message?.content;
+  const responseText = result.choices[0].message?.content;
   const ellapsed = Date.now() - start;
   if (verbose) {
-    logVerboseResponse(ellapsed, responseText);
+    logVerboseResponse(ellapsed, responseText ?? undefined);
   }
   const output = parseResult(tools, responseText!);
   return output;
