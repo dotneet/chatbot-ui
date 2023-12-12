@@ -8,7 +8,7 @@ import prompts from './prompts/agent';
 import chalk from 'chalk';
 import { CallbackManager } from 'langchain/callbacks';
 import { PromptTemplate } from 'langchain/prompts';
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
+import { OpenAI } from 'openai';
 import { getOpenAIApi } from '@/utils/server/openai';
 import { OpenAIError } from '@/utils/server';
 import { saveLlmUsage } from '@/utils/server/llmUsage';
@@ -149,7 +149,7 @@ export const executeNotConversationalReactAgent = async (
   }
   let result;
   try {
-    result = await openai.createChatCompletion({
+    result = await openai.chat.completions.create({
       model: context.model.id,
       messages,
       temperature: 0.0,

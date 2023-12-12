@@ -152,7 +152,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const openai = getOpenAIApi(model.azureDeploymentId);
     let answerRes;
     try {
-      answerRes = await openai.createChatCompletion({
+      answerRes = await openai.chat.completions.create({
         model: model.id,
         messages: [
           {

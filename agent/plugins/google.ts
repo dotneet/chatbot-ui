@@ -131,7 +131,7 @@ export default {
     const openai = getOpenAIApi(model.azureDeploymentId)
     let answerRes;
     try {
-      answerRes = await openai.createChatCompletion({
+      answerRes = await openai.chat.completions.create({
         model: model.id,
         messages: [
           {

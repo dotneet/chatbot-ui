@@ -6,7 +6,7 @@ import { Tiktoken } from 'tiktoken';
 import chalk from 'chalk';
 import { ConsoleCallbackHandler } from 'langchain/callbacks';
 import { LLMResult } from 'langchain/dist/schema';
-import { ChatCompletionRequestMessage } from 'openai';
+import OpenAI from 'openai';
 
 const strip = (str: string, c: string) => {
   const m = str.match(new RegExp(`^${c}(.*)${c}$`));
@@ -69,7 +69,7 @@ export const createAgentHistory = (
 
 export const messagesToOpenAIMessages = (
   messages: Message[],
-): ChatCompletionRequestMessage[] => {
+): OpenAI.Chat.CreateChatCompletionRequestMessage[] => {
   return messages.map((msg) => {
     return {
       role: msg.role,

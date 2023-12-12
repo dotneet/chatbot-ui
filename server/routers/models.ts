@@ -63,7 +63,6 @@ export const models = router({
         .map((model: any) => {
           for (const [key, value] of Object.entries(OpenAIModelID)) {
             const modelId = model.id;
-
             if (value === modelId) {
               const r: OpenAIModel = {
                 id: modelId,
@@ -80,6 +79,13 @@ export const models = router({
           }
         })
         .filter(Boolean);
+      if (OPENAI_API_TYPE === 'azure') {
+        return models.filter(
+          (modelId) =>
+            modelId.azureDeploymentId === process.env.AZURE_DEPLOYMENT_ID,
+        );
+      }
+
       return models;
     }),
 });

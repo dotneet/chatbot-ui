@@ -13,7 +13,7 @@ import prompts from './prompts/agentConvo';
 import chalk from 'chalk';
 import { CallbackManager } from 'langchain/callbacks';
 import { PromptTemplate } from 'langchain/prompts';
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 import { getOpenAIApi } from '@/utils/server/openai';
 import { OpenAIError } from '@/utils/server';
 import { saveLlmUsage } from '@/utils/server/llmUsage';
@@ -53,8 +53,8 @@ const createPrompts = (): {
 const createToolResponse = async (
   pluginResults: PluginResult[],
   toolResponsePrompt: PromptTemplate,
-): Promise<ChatCompletionRequestMessage[]> => {
-  let toolResponse: ChatCompletionRequestMessage[] = [];
+): Promise<OpenAI.Chat.CreateChatCompletionRequestMessage[]> => {
+  let toolResponse: OpenAI.Chat.CreateChatCompletionRequestMessage[] = [];
   if (pluginResults.length > 0) {
     for (const actionResult of pluginResults) {
       const toolResponseContent = await toolResponsePrompt.format({
@@ -77,7 +77,7 @@ const createFormattedPrompts = async (
   userPrompt: PromptTemplate,
   input: string,
   toolDescriptions: string,
-  toolResponse: ChatCompletionRequestMessage[],
+  toolResponse: OpenAI.Chat.CreateChatCompletionRequestMessage[],
 ): Promise<{ systemContent: string; userContent: string }> => {
   const systemContent = await sytemPrompt.format({
     locale: context.locale,
@@ -102,7 +102,7 @@ const createMessages = async (
   history: Message[],
   modelId: string,
   input: string,
-): Promise<ChatCompletionRequestMessage[]> => {
+): Promise<OpenAI.Chat.CreateChatCompletionRequestMessage[]> => {
   const { sytemPrompt, formatPrompt, userPrompt, toolResponsePrompt } =
     createPrompts();
   const toolResponse = await createToolResponse(
@@ -143,7 +143,7 @@ const createMessages = async (
   ];
 };
 
-const logVerboseRequest = (messages: ChatCompletionRequestMessage[]): void => {
+const logVerboseRequest = (messages: OpenAI.Chat.CreateChatCompletionRequestMessage[]): void => {
   console.log(chalk.greenBright('LLM Request:'));
   for (const message of messages) {
     console.log(chalk.blue(message.role + ': ') + message.content);
@@ -188,7 +188,7 @@ export const executeReactAgent = async (
   }
   let result;
   try {
-    result = await openai.createChatCompletion({
+    result = await openai.chat.completions.create({
       model: modelId,
       messages,
       temperature: 0.0,
