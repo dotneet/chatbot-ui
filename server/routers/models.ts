@@ -24,7 +24,7 @@ export const models = router({
 
       let url = `${OPENAI_API_HOST}/v1/models`;
       if (OPENAI_API_TYPE === 'azure') {
-        url = `${OPENAI_API_HOST}/openai/deployments?api-version=${OPENAI_API_VERSION}`;
+        url = `${OPENAI_API_HOST}/openai/models?api-version=${OPENAI_API_VERSION}`;
       }
 
       const response = await fetch(url, {
@@ -62,22 +62,24 @@ export const models = router({
       const models: OpenAIModel[] = json.data
         .map((model: any) => {
           for (const [key, value] of Object.entries(OpenAIModelID)) {
-            const modelId = OPENAI_API_TYPE === 'azure' ? model.model : model.id;
+            const modelId = model.id;
+
             if (value === modelId) {
               const r: OpenAIModel = {
                 id: modelId,
-                azureDeploymentId: OPENAI_API_TYPE === 'azure' ? model.id : undefined,
+                azureDeploymentId:
+                  OPENAI_API_TYPE === 'azure' ? model.id : undefined,
                 name: OpenAIModels[value].name,
                 maxLength: OpenAIModels[value].maxLength,
                 tokenLimit: OpenAIModels[value].tokenLimit,
                 type: OpenAIModels[value].type,
               };
+
               return r;
             }
           }
         })
         .filter(Boolean);
-
       return models;
     }),
 });

@@ -1,7 +1,9 @@
 import { Message } from '@/types/chat';
+import { ApiError, ApiErrorBody, ErrorResponseCode } from '@/types/error';
 import { OpenAIModel } from '@/types/openai';
 
 import {
+  AZURE_DEPLOYMENT_ID,
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
@@ -13,7 +15,6 @@ import {
   ReconnectInterval,
   createParser,
 } from 'eventsource-parser';
-import { ApiError, ApiErrorBody, ErrorResponseCode } from '@/types/error';
 
 export class OpenAIError extends ApiError {
   type: string;
@@ -31,10 +32,10 @@ export class OpenAIError extends ApiError {
   getApiError(): ApiErrorBody {
     let errorCode: ErrorResponseCode;
     switch (this.code) {
-      case "429":
+      case '429':
         errorCode = ErrorResponseCode.OPENAI_RATE_LIMIT_REACHED;
         break;
-      case "503":
+      case '503':
         errorCode = ErrorResponseCode.OPENAI_SERVICE_OVERLOADED;
         break;
       default:
@@ -55,7 +56,7 @@ export const OpenAIStream = async (
 ) => {
   let url = `${OPENAI_API_HOST}/v1/chat/completions`;
   if (OPENAI_API_TYPE === 'azure') {
-    url = `${OPENAI_API_HOST}/openai/deployments/${model.azureDeploymentId}/chat/completions?api-version=${OPENAI_API_VERSION}`;
+    url = `${OPENAI_API_HOST}/openai/deployments/${AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`;
   }
   const res = await fetch(url, {
     headers: {
@@ -116,13 +117,20 @@ export const OpenAIStream = async (
           if (data !== '[DONE]') {
             try {
               const json = JSON.parse(data);
-              if (json.choices[0].finish_reason != null) {
+              if (
+                json.choices &&
+                json.choices[0] &&
+                json.choices[0].finish_reason != null
+              ) {
                 controller.close();
                 return;
               }
-              const text = json.choices[0].delta.content;
-              const queue = encoder.encode(text);
-              controller.enqueue(queue);
+
+              if (json.choices && json.choices[0] && json.choices[0].delta) {
+                const text = json.choices[0].delta.content;
+                const queue = encoder.encode(text);
+                controller.enqueue(queue);
+              }
             } catch (e) {
               controller.error(e);
             }
@@ -133,8 +141,8 @@ export const OpenAIStream = async (
       const parser = createParser(onParse);
 
       for await (const chunk of res.body as any) {
-        const content = decoder.decode(chunk)
-        if (content.trim() === "data: [DONE]") {
+        const content = decoder.decode(chunk);
+        if (content.trim() === 'data: [DONE]') {
           controller.close();
         } else {
           parser.feed(content);
