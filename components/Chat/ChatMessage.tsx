@@ -6,7 +6,7 @@ import {
   IconTrash,
   IconUser,
 } from '@tabler/icons-react';
-import { FC, memo, useContext, useEffect, useRef, useState } from 'react';
+import { FC, memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -30,6 +30,30 @@ export interface Props {
   messageIndex: number;
 }
 
+export const useTokenAdder = (slowMode: boolean, setText: (reply: string) => void) => {
+  const r = useRef("")
+  const rr = useRef("")
+  const pendingTokens = useRef<string[]>([]);
+  const adding = useRef(false);
+  const addTokens = useCallback((newTokens: string) => {
+    pendingTokens.current.push(...Array.from(newTokens));
+    rr.current += newTokens;
+    if (!adding.current) {
+      adding.current = true;
+      setTimeout(async () => {
+        while (pendingTokens.current.length) {
+          r.current += pendingTokens.current.shift();
+          setText(r.current);
+          if (slowMode) await new Promise(r => setTimeout(r, 30));
+          await new Promise(r => requestAnimationFrame(r));
+        }
+        adding.current = false;
+      }, 0);
+    }
+  }, [setText, slowMode]);
+  return [addTokens, r, rr] as const;
+};
+
 export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
   const { t } = useTranslation('chat');
   const [_, conversationsAction] = useConversations();
@@ -47,6 +71,8 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [messageContent, setMessageContent] = useState(message.content);
   const [messagedCopied, setMessageCopied] = useState(false);
+
+  const [addTokens, r, rr] = useTokenAdder(false, setMessageContent)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -140,8 +166,13 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
   };
 
   useEffect(() => {
-    setMessageContent(message.content);
-  }, [message.content]);
+    if (message.role === 'user') return setMessageContent(message.content)
+    if (message.content === messageContent || message.content.length <= rr.current.length)
+      r.current = rr.current = message.content;
+    else
+      addTokens(message.content.slice(rr.current.length))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [message.content, addTokens]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -152,11 +183,10 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
 
   return (
     <div
-      className={`group md:px-4 ${
-        message.role === 'assistant'
-          ? 'border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100'
-          : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
-      }`}
+      className={`group md:px-4 ${message.role === 'assistant'
+        ? 'border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100'
+        : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
+        }`}
       style={{ overflowWrap: 'anywhere' }}
     >
       <div className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
@@ -279,7 +309,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
                   },
                 }}
               >
-                {message.content}
+                {messageContent}
               </MemoizedReactMarkdown>
 
               <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
