@@ -6,7 +6,7 @@ import {
   IconTrash,
   IconUser,
 } from '@tabler/icons-react';
-import { FC, memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { FC, memo, useContext, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -24,35 +24,12 @@ import ChatContext from './Chat.context';
 import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import { useTokenAdder } from '@/hooks/useTokenAddr';
 
 export interface Props {
   message: Message;
   messageIndex: number;
 }
-
-export const useTokenAdder = (slowMode: boolean, setText: (reply: string) => void) => {
-  const r = useRef("")
-  const rr = useRef("")
-  const pendingTokens = useRef<string[]>([]);
-  const adding = useRef(false);
-  const addTokens = useCallback((newTokens: string) => {
-    pendingTokens.current.push(...Array.from(newTokens));
-    rr.current += newTokens;
-    if (!adding.current) {
-      adding.current = true;
-      setTimeout(async () => {
-        while (pendingTokens.current.length) {
-          r.current += pendingTokens.current.shift();
-          setText(r.current);
-          if (slowMode) await new Promise(r => setTimeout(r, 30));
-          await new Promise(r => requestAnimationFrame(r));
-        }
-        adding.current = false;
-      }, 0);
-    }
-  }, [setText, slowMode]);
-  return [addTokens, r, rr] as const;
-};
 
 export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
   const { t } = useTranslation('chat');
@@ -72,7 +49,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
   const [messageContent, setMessageContent] = useState(message.content);
   const [messagedCopied, setMessageCopied] = useState(false);
 
-  const [addTokens, r, rr] = useTokenAdder(false, setMessageContent)
+  const [addTokens, r, rr] = useTokenAdder(setMessageContent)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   mongo:
-    image: mongo
+    image: mongo:6
     restart: always
     ports:
       - 27017:27017
